@@ -18,7 +18,7 @@ import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser';
 import session from 'express-session';
 
-import navBar from './components/Navbar.js';
+//import navBar from './components/Navbar.js';
 
 //var configDB = require('./config/database.js');
 import configDB from './config/database.js';
@@ -31,6 +31,9 @@ import configDB from './config/database.js';
 // views settings ===============================================================
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, "views"));
+
+// define the folder that will be used for static assets
+app.use(Express.static(path.join(__dirname, 'public')));
 
 app.get('/ittest',(req, res) => {
 	
@@ -46,5 +49,5 @@ app.get('/',(req, res) => {
 
 
 app.listen(port);
-console.log("magic happening on port" + port);
+console.log("magic happening on port:" + port);
 

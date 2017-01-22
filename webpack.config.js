@@ -22,16 +22,18 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
-    loaders: [{
+    rules: [{
       test: path.join(__dirname),
-      loader: ['babel-loader'],
-      query: {
-        cacheDirectory: 'babel_cache',
-        presets: debug ? ['react', 'es2015', 'react-hmre'] : ['react', 'es2015']
-      }
+		 use: {loader: 'babel-loader',
+				options: {
+					cacheDirectory: 'babel_cache',
+//					presets: debug ? ['react', 'es2015', 'react-hmre'] : ['react', 'es2015']
+					presets: ['react', 'es2015']
+				}
+				},
     }]
   },
-  plugins: debug ? [] : [
+	plugins: debug ? [] : [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
