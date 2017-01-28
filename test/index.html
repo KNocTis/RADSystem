@@ -1,49 +1,85 @@
 <!-- views/index.ejs -->
 <!doctype html>
 <html>
-<head>
+	<head>
     <title>TutorABC test support</title>
 <!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="../public/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" crossorigin="anonymous">
 	
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
-    <style>
-        body        { padding-top:80px; }
-    </style>
-</head>
-<body>
-
-	<nav class="navbar navbar-default navbar-fixed-top">
-		
-	  <div class="container-fluid">
-		 <!-- Brand and toggle get grouped for better mobile display -->
-		 <div class="navbar-header">
-			<a class="navbar-brand" href="#">TutorABC</a>
-		 </div>
-
-		 <!-- Collect the nav links, forms, and other content for toggling -->
-		 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-			<ul class="nav navbar-nav">
-			  <li><a href="#">Reserve Test</a></li>
-			  <li><a href="#">How to use</a></li>
-				<li><a href="#">Downloads</a></li>
-			</ul>
-		 </div><!-- /.navbar-collapse -->
-		  
-	  </div><!-- /.container-fluid -->
-	</nav>
+		 <style>
+	/*        body        { padding-top:80px; }*/
+			 .id-password div {
+				 display: inline-block;
+			 }
+		 </style>
+	</head>
 	
+	<body>
+
+			<nav class="navbar navbar-default">
+			  <div class="container-fluid">
+				 <div class="navbar-header">
+					 <a class="navbar-brand" to="/test">TutorABC</a>
+				 </div>
+				 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+					  <li class="active"><a to="/reserve">Reserve Test</a></li>
+					  <li><a to="/how-to-use">How to use</a></li>
+						<li><a to="/downloads">Downloads</a></li>
+					</ul>
+				 </div>
+			  </div>
+			</nav>
+
 	
-<div class="container">
-    <div class="jumbotron text-center">
-        <h1><span class="fa fa-lock"></span> Node Authentication</h1>
+		<div class="jumbotron text-center">
+			<form id="reserve-request text-center">
+				<div class="id-password">
+				  <div class="form-group">
+					 <label for="teamviewer-id">TeamViewer ID</label>
+					 <input type="number" class="form-control text-center" id="teamviewer-id" placeholder="ID">
+				  </div>
+				  <div class="form-group">
+					 <label for="teamviewer-pw">Password</label>
+					 <input type="text" class="form-control text-center" id="teamviewer-pw" placeholder="Password">
+				  </div>
+				</div>
 
-        <p>Login or Register with:</p>
+			  <div class="form-group">
+				 <p class="help-block">Waiting words</p>
+			  </div>
 
-        <a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Local Login</a>
-        <a href="/signup" class="btn btn-default"><span class="fa fa-user"></span> Local Signup</a>
-    </div>
+			  <div class="checkbox">
+				 <button type="submit" class="btn btn-default">Submit</button>
+			  </div>
 
-</div>
-</body>
+			</form>
+		</div>
+	
+
+		<div class="jumbotron text-center">
+			<p>1. Click <a class="" href="/test">here</a> to downlaod TeamViewer into your computer.</p>
+			<p>2. Install and keep it runnning on your computer</p>
+			<p>3. XXXXXXXXXX XXXXXXXXXX XXXXXXXXXX XXXXXXXXXX </p>
+			<p>4. XXXXXXXXXX XXXXXXXXXX XXXXXXXXXX XXXXXXXXXX </p>
+			<p>5. ASFDAS FGASG EGRDGESGSE G ES G </p>
+			<p>6. dgs ds ge ge grs gdf gsd gregrshbdghdsghrs er </p>
+		</div>
+
+
+
+	</body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -48,6 +48,26 @@ app.get('/',(req, res) => {
 })
 
 
-app.listen(port);
-console.log("magic happening on port:" + port);
+app.listen(port, function(){
+	console.log("magic happening on port:" + port);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

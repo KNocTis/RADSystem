@@ -191,7 +191,6 @@
     "vm-browserify": "^0.0.4",
     "warning": "^3.0.0",
     "watchpack": "^1.2.0",
-    "webpack": "^2.2.0",
     "webpack-core": "^0.6.9",
     "whatwg-fetch": "^2.0.2",
     "window-size": "^0.3.0",
@@ -199,10 +198,13 @@
     "xtend": "^4.0.1",
     "yargs": "^6.6.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+	  "webpack": "^2.2.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "webpack --config webpack.config.js; babel-node --presets 'react,es2015' server.js",
+    "start": "babel-node --presets 'react,es2015' server.js",
+	  "build": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
