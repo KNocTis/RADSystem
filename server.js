@@ -7,6 +7,12 @@ import Express from 'express';
 var app      = new Express();
 var port     = process.env.PORT || 8085;
 
+var server = require('http').Server(app);
+
+//import Realtime-Common modules
+import SocketIO from 'socket.io';
+var io = SocketIO(server);
+
 import path from 'path';
 
 import mongoose from 'mongoose';
@@ -48,14 +54,43 @@ app.get('/',(req, res) => {
 })
 
 
-app.listen(port, function(){
-	console.log("magic happening on port:" + port);
+//app.listen(port, function(){
+//	console.log("magic happening on port:" + port);
+//});
+
+server.listen(port, () => {
+	console.log("Magic happening on port:" + port);
+})
+
+//////////////////////////////////
+//////////  Socket.io  ///////////
+//////////////////////////////////
+
+io.on("connection", socket => {
+	console.log("socket.io started");
+	
+	socket.on('reserve test', msg => {
+		console.log("Test request received", "id: ", msg.id, " pw: ", msg.password );
+		
+		
+		
+//		console.log(socket);
+		io.emit('reserve test', msg.id);
+	});
+	
+	socket.on('disconnect', () => {
+		console.log("A user disconnected");
+	});
 });
 
+if (!length >= 9) {
+	handleError();
+	 
+}
 
-
-
-
+db.tickets.insert({}, (error) => {
+	
+})
 
 
 

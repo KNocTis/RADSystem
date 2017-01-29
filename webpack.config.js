@@ -1,6 +1,8 @@
 "use strict";
 
 const debug = process.env.NODE_ENV !== "production";
+//const debug = false;
+
 
 const webpack = require('webpack');
 const path = require('path');
@@ -45,7 +47,7 @@ module.exports = {
       sourcemap: false,
       beautify: false,
       dead_code: true
-    }),
+    })
   ]
 };
 
