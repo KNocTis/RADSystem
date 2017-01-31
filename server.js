@@ -67,30 +67,29 @@ server.listen(port, () => {
 //////////////////////////////////
 
 io.on("connection", socket => {
+    
+    //
 	console.log("socket.io started");
 	
+    //Consultant end
 	socket.on('reserve test', msg => {
+        
 		console.log("Test request received", "id: ", msg.id, " pw: ", msg.password );
 		
-		
-		
-//		console.log(socket);
-		io.emit('reserve test', msg.id);
+		setTimeout(() => {
+            io.emit('reserve test', msg.id);
+        }, 3000);
+				
 	});
+    
+    
+    //IT end
+    socket.on();
 	
 	socket.on('disconnect', () => {
 		console.log("A user disconnected");
 	});
 });
-
-if (!length >= 9) {
-	handleError();
-	 
-}
-
-db.tickets.insert({}, (error) => {
-	
-})
 
 
 

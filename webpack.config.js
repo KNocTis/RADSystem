@@ -3,13 +3,16 @@
 const debug = process.env.NODE_ENV !== "production";
 //const debug = false;
 
-
+const itend = true;
+const entryFile = itend ? path.join(__dirname, 'app-it.js') : path.join(__dirname, 'app-client.js');
+const outputFile = itend ? path.join(__dirname, 'private', 'js') : path.join(__dirname, 'public', 'js')
+      
 const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
   devtool: debug ? 'inline-sourcemap' : null,
-  entry: path.join(__dirname, 'app-client.js'),
+  entry: entryFile,
 //  devServer: {
 //    inline: true,
 //    port: 3333,

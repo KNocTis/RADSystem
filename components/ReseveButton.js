@@ -16,13 +16,14 @@ const buttonText = [
 	"Reserve",
 	"Reserving",
 	"Cancel",
-	"Reserve"
+	"Cancel"
 ];
 
 const buttonClass = [
 	"btn btn-default",
 	"btn btn-default disabled",
-	"btn btn-danger"
+	"btn btn-danger",
+    "btn btn-danger disabled"
 ];
 
 export default class ReserveButton extends React.Component {
@@ -56,7 +57,7 @@ export default class ReserveButton extends React.Component {
 	
 	render () {
 		return (
-			<button type="button" className={this.buttonClass()} onClick={this.handleReserveButton}>{this.props.reserved ? buttonText[1] : buttonText[0]}</button>
+			<button type="button" className={buttonClass[this.props.reserved]} onClick={this.handleReserveButton}>{buttonText[this.props.reserved]}</button>
 		);
 	}
 	

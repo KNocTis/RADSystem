@@ -1,0 +1,175 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+	<head>
+    <title>TutorABC test support</title>
+<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" crossorigin="anonymous">
+	
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+		 <style>
+	        body { 
+                padding-top:60px; 
+             }
+             
+			 .id-password div {
+				 display: inline-block;
+			 }
+             
+            .table-borderless td, .table-borderless th {
+                border: none;
+            } 
+             
+             .table-container {
+                margin-left: 10%;
+                max-width: 80%;
+             }
+             
+             table {
+                font-size: 10pt;
+             }
+             
+             .pager a {
+                 font-size: 10px;
+             }
+		 </style>
+        <link rel="stylesheet" href="/css/main.css">
+	</head>
+	
+	<body>
+
+			<nav class="navbar navbar-default navbar-fixed-top">
+			  <div class="container-fluid">
+				 <div class="navbar-header">
+					 <a class="navbar-brand" to="/test">TutorABC</a>
+				 </div>
+				 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+					  <li class="active"><a to="/reserve">Test list</a></li>
+					</ul>
+				 </div>
+			  </div>
+			</nav>
+
+        <div class="jumbotron">
+            <div class="table-container">
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Time</th>
+                            <th>ID</th>
+                            <th>Password</th>
+                            <th>Status</th>
+                            <th>Handler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <th scope="row">0044D8</th>
+                        <td>16//01/31 16:00</td>
+                        <td>123456789</td>
+                        <td>5987</td>
+                        <td><button class="btn btn-success btn-xs disabled" type="button">On it</button></td>
+                        <td>Yona Tang</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">0044D9</th>
+                        <td>16//01/31 16:10</td>
+                        <td>998774115</td>
+                        <td>1234</td>
+                        <td><button class="btn btn-success btn-xs disabled" type="button">On it</button></td>
+                        <td>Yona Tang</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">0044E0</th>
+                        <td>16//01/31 16:20</td>
+                        <td>555887449</td>
+                        <td>1234</td>
+                        <td><button class="btn btn-success btn-xs" type="button">On it</button></td>
+                        <td></td>
+                        </tr>
+                        <tr>
+                        <th scope="row">0044E1</th>
+                        <td>16//01/31 16:30</td>
+                        <td>546598741</td>
+                        <td>5766</td>
+                        <td><button class="btn btn-danger btn-xs" type="button">Done</button></td>
+                        <td>Magican</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <nav aria-label="...">
+                  <ul class="pager">
+                    <li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li>
+                    <li class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
+                  </ul>
+                </nav>
+                
+            </div>
+            
+
+        </div>
+
+        
+        
+		<div class="jumbotron text-center">
+			<form id="reserve-request text-center">
+				<div class="id-password">
+				  <div class="form-group">
+					 <label for="teamviewer-id">TeamViewer ID</label>
+					 <input type="number" class="form-control text-center" id="teamviewer-id" placeholder="ID">
+				  </div>
+				  <div class="form-group">
+					 <label for="teamviewer-pw">Password</label>
+					 <input type="text" class="form-control text-center" id="teamviewer-pw" placeholder="Password">
+				  </div>
+				</div>
+
+			  <div class="form-group">
+				 <p class="help-block">Waiting words</p>
+			  </div>
+
+			  <div class="checkbox">
+				 <button type="submit" class="btn btn-default disabled">Submit</button>
+			  </div>
+
+                <div class="alert alert-success" role="alert">test test test</div>
+                
+			</form>
+		</div>
+	
+
+		<div class="jumbotron text-center">
+			<p>1. Click <a class="" href="/test">here</a> to downlaod TeamViewer into your computer.</p>
+			<p>2. Install and keep it runnning on your computer</p>
+			<p>3. XXXXXXXXXX XXXXXXXXXX XXXXXXXXXX XXXXXXXXXX </p>
+			<p>4. XXXXXXXXXX XXXXXXXXXX XXXXXXXXXX XXXXXXXXXX </p>
+			<p>5. ASFDAS FGASG EGRDGESGSE G ES G </p>
+			<p>6. dgs ds ge ge grs gdf gsd gregrshbdghdsghrs er </p>
+		</div>
+        
+		<div class="jumbotron text-center">
+            <div class="alert alert-success" role="alert">...</div>
+            <div class="alert alert-info" role="alert">...</div>
+            <div class="alert alert-warning" role="alert">...</div>
+            <div class="alert alert-danger" role="alert">...</div>
+		</div>
+
+
+
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
