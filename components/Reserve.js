@@ -38,6 +38,8 @@ export default class Reserve extends React.Component {
         alert: 0
     };
 	  
+	  this.channel = "";
+	  
 	  this.reserveButtonHasBeenClicked = this.reserveButtonHasBeenClicked.bind(this);
   }
 	
@@ -69,16 +71,16 @@ export default class Reserve extends React.Component {
                 }
 
                 //send out request
-                socket.emit('reserve test', teamViewerDetail);
+                socket.emit('reserve', teamViewerDetail);
 
                 //Change UI
                 this.setState((prevState) => ({
-                    reserved: 1;
+                    reserved: 1
                 }))
                 break;
                 
             case 2:
-                
+                socket.emit(this.channel, 'cancel');
                 
                 break;
         }
@@ -95,10 +97,15 @@ export default class Reserve extends React.Component {
 //    this.interval = setInterval(() => this.tick(), 2000);
 	  socket = io();
 	  
-	  socket.on('reserve test', (msg) => {
+	  socket.on('reserve', (msg) => {
 		  
           if (!msg) {
               console.warn("Server can not create test request");
+				 
+                this.setState((prevState) => ({
+                    reserved: 0
+                }))
+					 
               return false;
           } 
           
@@ -106,7 +113,14 @@ export default class Reserve extends React.Component {
 		  socket.on(msg, msg => {
 			  // msg.reserved 
               // msg.alert
-              
+              if (msg == 'cancelled') {
+					  this.setState((prevState) => ({
+							reserved: 0
+					  }));
+					  
+					  return;
+				  }
+			  
               this.setState((prevState) => ({
                   reserved: msg.reserved ? msg.reserved : prevState.reserved,
                   alert: msg.alert ? msg.alert : prevState.alert
@@ -118,7 +132,7 @@ export default class Reserve extends React.Component {
 			  reserved: 2
 		  }));
           
-          this.props.channel = msg;
+          this.channel = msg;
 		  
 		  console.log("socket channel", msg, " is on");
 	  })
@@ -139,13 +153,13 @@ export default class Reserve extends React.Component {
 				  </div>
 				</div>
 			  <div className="form-group">
-				 <p className="help-block">{waitingWords[this.state.ticketStatus]}</p>
+				 <p className="help-block">{waitingWords[this.state.reserved]}</p>
 			  </div>
 			  <div>
 				  <ReserveButton reserved={this.state.reserved} onClick={this.reserveButtonHasBeenClicked} />
 			  </div>
                 
-                <div className="alert alert-success" role="alert">test test test</div>
+                <div className={alertClassName[this.state.alert]} role="alert">{alertText[this.state.alert]}</div>
                 
 			</form>
 		);

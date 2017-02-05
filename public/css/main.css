@@ -1,3 +1,35 @@
-.table-borderless td, .table-borderless th {
-    border: none;
+/*
+body { 
+	 padding-top:60px; 
+ }
+*/
+
+.id-password div {
+ display: inline-block;
 }
+
+.table-borderless td, .table-borderless th {
+	 border: none;
+} 
+
+ .table-container {
+	 margin-left: 10%;
+	 max-width: 80%;
+ }
+
+ table {
+	 font-size: 10pt;
+	 color: #777777;
+ }
+
+ .pager a {
+	  font-size: 10px;
+ }
+
+ .jumbotron-trans {
+	 background-color: #f9f9f9;
+ }
+
+ .new-tabs {
+	  margin-left: 45%;
+ }

@@ -4,7 +4,7 @@
 	<head>
     <title>TutorABC test support</title>
 <!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" crossorigin="anonymous">
+	<link rel="stylesheet" href="../public/css/bootstrap.min.css" crossorigin="anonymous">
 	
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
 		 <style>
@@ -27,10 +27,19 @@
              
              table {
                 font-size: 10pt;
+                color: #777777;
              }
              
              .pager a {
                  font-size: 10px;
+             }
+             
+             .jumbotron-trans {
+                background-color: #f9f9f9;
+             }
+             
+             .new-tabs {
+                 margin-left: 45%;
              }
 		 </style>
         <link rel="stylesheet" href="/css/main.css">
@@ -51,8 +60,12 @@
 			  </div>
 			</nav>
 
-        <div class="jumbotron">
+        <div class="jumbotron jumbotron-trans">
             <div class="table-container">
+                <ul class="nav nav-pills new-tabs hide" role="tablist">
+                  <li role="presentation"><a>New <span class="badge">3</span></a></li>
+                </ul>
+                
                 <table class="table table-borderless">
                     <thead>
                         <tr>
@@ -100,7 +113,13 @@
                     </tbody>
                 </table>
                 
-                <nav aria-label="...">
+                <p class="text-center"><a><span class="glyphicon glyphicon-menu-down"></span></a></p>
+                
+                
+<button type="button" class="btn btn-default">
+  <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span> Star
+</button>
+                <nav aria-label="">
                   <ul class="pager">
                     <li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li>
                     <li class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>

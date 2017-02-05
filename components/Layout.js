@@ -5,9 +5,9 @@ import { Link } from 'react-router';
 import NavBar from './NavBar.js'
 
 const navItems = [
-    {link: "/reserve", text: "Reserve Test"},
-    {link: "/how-to-use", text: "How to use"},
-    {link: "/downloads", text: "Downloads"}
+    {link: "reserve", text: "Reserve Test"},
+    {link: "how-to-use", text: "How to use"},
+    {link: "downloads", text: "Downloads"}
 ]
 
 export default class Layout extends React.Component {

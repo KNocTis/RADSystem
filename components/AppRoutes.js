@@ -11,8 +11,8 @@ export default class AppRoutes extends React.Component {
 			<Router history={browserHistory}>
 				<Route path="/" component={Layout}>
 					<IndexRoute component={Reserve}></IndexRoute>
-					<Route path="/how-to-use" component={Howtouse}></Route>
-					<Route path="/reserve" component={Reserve}></Route>
+					<Route path="how-to-use" component={Howtouse}></Route>
+					<Route path="reserve" component={Reserve}></Route>
 				</Route>
 			</Router>
 		);

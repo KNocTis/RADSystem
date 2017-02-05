@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { Link } from 'react-router';
-import NavBar from './NavBar.js'
+import NavBar from '../components/NavBar.js'
 
 const navItems = [
-    {link: "/testlist", text: "Test List"}
+    {link: "testlist", text: "Test List"}
 ]
 
 export default class Layout extends React.Component {

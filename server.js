@@ -40,6 +40,7 @@ app.set('views', path.join(__dirname, "views"));
 
 // define the folder that will be used for static assets
 app.use(Express.static(path.join(__dirname, 'public')));
+app.use('/ts', Express.static(path.join(__dirname, 'private')));
 
 app.get('/ittest',(req, res) => {
 	
@@ -51,6 +52,13 @@ app.get('/',(req, res) => {
 //	let markup = <NavBar/>;
 		 
 	res.render('consultant');
+})
+
+app.get('/ts',(req, res) => {
+	
+//	let markup = <NavBar/>;
+		 
+	res.render('ts');
 })
 
 
@@ -72,19 +80,41 @@ io.on("connection", socket => {
 	console.log("socket.io started");
 	
     //Consultant end
-	socket.on('reserve test', msg => {
-        
-		console.log("Test request received", "id: ", msg.id, " pw: ", msg.password );
+	
+	// msg object :
+	// msg.type ====>
+	//			0 ===> request for test
+	//			1 ===> cancel test
+	
+	socket.on('reserve', teamviewerDetail => {
 		
-		setTimeout(() => {
-            io.emit('reserve test', msg.id);
-        }, 3000);
+		console.log("Test request received", "id: ", teamviewerDetail.id, " pw: ", teamviewerDetail.password );
+		
+		socket.emit('reserve', teamviewerDetail.id);
+		
+		socket.on(teamviewerDetail.id, msg => {
+			if (msg == 'cancel') {
+				console.log("canceling test ticket: ", teamviewerDetail.id);
+				// send database request
+				
+				//call back if success
+				socket.emit(teamviewerDetail.id, 'cancelled');
+			}
+		});
 				
 	});
     
     
     //IT end
-    socket.on();
+//    socket.on();
+    
+    socket.on('get ticket info', ticketNo => {
+		 console.log("Being asked for ticket info of ", ticketNo)
+        //get info of ticket from Datebase
+        //
+        //callback below
+//        socket.emit(ticketNo, ticketInfo);
+    });
 	
 	socket.on('disconnect', () => {
 		console.log("A user disconnected");

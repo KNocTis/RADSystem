@@ -1,26 +1,56 @@
 <!-- views/index.ejs -->
 <!doctype html>
 <html>
-<head>
-    <title>Node Authentication</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
-    <style>
-        body        { padding-top:80px; }
-    </style>
-</head>
-<body>
-<div class="container">
+	<head>
+        
+        <title>TutorABC test support</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/lib/bootstrap.min.css" crossorigin="anonymous">
 
-    <div class="jumbotron text-center">
-        <h1><span class="fa fa-lock"></span> Node Authentication</h1>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
 
-        <p>Login or Register with:</p>
+		
+		 <style>
+             
+			 .id-password div {
+				 display: inline-block;
+			 }
+             
+            .table-borderless td, .table-borderless th {
+                border: none;
+            } 
+             
+             .table-container {
+                margin-left: 10%;
+                max-width: 80%;
+             }
+             
+             table {
+                font-size: 10pt;
+                color: #777777;
+             }
+             
+             .pager a {
+                 font-size: 10px;
+             }
+             
+             .jumbotron-trans {
+                background-color: #f9f9f9;
+             }
+             
+             .new-tabs {
+                 margin-left: 45%;
+             }
+		 </style>
+		
+	</head>
+	
+	<body>
 
-        <a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Local Login</a>
-        <a href="/signup" class="btn btn-default"><span class="fa fa-user"></span> Local Signup</a>
-    </div>
+		<div id="main"></div>
 
-</div>
-</body>
+		<script src="js/bundle.js"></script>
+        
+	</body>
+	
 </html>
