@@ -24,16 +24,6 @@ import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser';
 import session from 'express-session';
 
-//import navBar from './components/Navbar.js';
-
-//var configDB = require('./config/database.js');
-import configDB from './config/database.js';
-
-// configuration ===============================================================
-//mongoose.connect(configDB.url); // connect to our database
-
-//require('./config/passport')(passport); // pass passport for configuration
-
 // views settings ===============================================================
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, "views"));
@@ -42,25 +32,109 @@ app.set('views', path.join(__dirname, "views"));
 app.use(Express.static(path.join(__dirname, 'public')));
 app.use('/ts', Express.static(path.join(__dirname, 'private')));
 
+app.use(morgan('dev')); 
+app.use(cookieParser()); // read cookies (needed for auth)
+app.use(bodyParser.json()); // get information from html forms
+app.use(bodyParser.urlencoded({ extended: true }));
+// required for passport
+app.use(session({
+    secret: 'ilovescotchscotchyscotchscotch', // session secret
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+//var configDB = require('./config/database.js');
+
+// configuration ===============================================================
+import configDB from './config/database.js';
+mongoose.connect(configDB.url); // connect to our database
+
+//require('./config/passport')(passport); // pass passport for configuration
+require('./config/passport.js')(passport);
+
 app.get('/ittest',(req, res) => {
 	
 	app.render('consultant');
-})
+});
 
 app.get('/',(req, res) => {
 	
 //	let markup = <NavBar/>;
 		 
 	res.render('consultant');
-})
+});
 
-app.get('/ts',(req, res) => {
+let isLoggedIn = (req, res, next) => {
+    if (req.isAuthenticated())
+        return next();
+
+    res.redirect('/login');
+}
+
+app.get('/ts', isLoggedIn, (req, res) => {
 	
 //	let markup = <NavBar/>;
-		 
+	console.log(req.user);
 	res.render('ts');
+});
+
+
+app.get('/login', (req, res) => {
+	res.render('login');
+});
+
+app.get('/signup', (req, res) => {
+	res.render('signup');
+});
+
+app.post("/login", passport.authenticate('local-login', {
+	successRedirect: '/ts',
+	failureRedirect: '/login',
+	failureFlash: false
+	})
+);
+
+app.post("/signup", passport.authenticate('local-signup', {
+	successRedirect: '/login',
+	failureRedirect: '/signup',
+	failureFlash: false
+	})
+);
+
+
+// API ========================================================================
+
+app.get("/api/get-table-list", isLoggedIn, (req, res) => {
+	console.log("User: ", req.user, " requseted for table list");
+   
+   configDB.getTicketsList(20, "", (err, data) => {
+      if (err) {
+         console.warn("Error occured when find tickets", err);
+         return false;
+      }
+      
+      res.json(data);
+   })
+//   res.json({message: "loaded"});
 })
 
+app.post("/api/change-ticket-status", isLoggedIn, (req, res) => {
+	console.log("User: ", req.user, " requseted for ticket status changing");
+   console.log("request: ", req);
+   res.json({message: "loaded"});
+})
+
+app.post("/api/create-ticket", (req, res) => {
+	console.log("ID: ", req.body.tvID, "PW: ", req.body.tvPW);
+   
+   configDB.createNewTicketWithIDAndPw(req.body.tvID, req.body.tvPW, null, (ticket) => {
+      res.json(ticket);
+   })
+   
+//   res.json('hey carlton');
+})
 
 //app.listen(port, function(){
 //	console.log("magic happening on port:" + port);
@@ -122,9 +196,7 @@ io.on("connection", socket => {
 });
 
 
-
-
-
+//Side methods
 
 
 

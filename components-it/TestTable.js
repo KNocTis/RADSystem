@@ -68,6 +68,8 @@ export default class TestTable extends React.Component {
         this.socket.emit("table list", {
             type: 'first page'
         })
+        
+        this.getTableList();
     }
     
     handleNextTicketsButton () {
@@ -79,6 +81,20 @@ export default class TestTable extends React.Component {
         
 //        this.setState((prevState))
     }
+   
+   getTableList(number) {
+
+      $.ajax({
+        url: "/api/get-table-list",
+        data: {
+          
+        },
+        success: function(result) {
+          console.log(result);
+        }
+      });
+      
+   }
     
     render () {
         return (

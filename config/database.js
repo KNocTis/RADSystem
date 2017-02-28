@@ -1,9 +1,96 @@
+import Ticket from '../model/ticket.js';
 // config/database.js
 module.exports = {
 
-    'url' : 'mongodb://localhost:27017/radsystem' // looks like mongodb://<user>:<pass>@mongo.onmodulus.net:27017/Mikha4ot
+    'url' : 'mongodb://localhost:27017/radsystem', // looks like mongodb://<user>:<pass>@mongo.onmodulus.net:27017/Mikha4ot
+   
+   //=====================================
+   //==============Query==================
+   //=====================================
+   getTicketsList: (quantity, from, done) => {
+                
+      Ticket.find().sort({'status': 1}).limit(quantity).exec((err, data) => {
+         done(err, data);
+      });
+      
+   },
 
-};
+   getLatestTickets: (from, done) => {
+      
+   },
+   
+   getTicketDetailWithTicketNo: (ticketNo, done) => {
+      Ticket.findOne({'ticketNumber':ticketNo}, (err, ticket) => {
+         done(ticket);
+      })
+   },
+   
+   //=====================================
+   //==============Submit==================
+   //=====================================
+   createNewTicketWithIDAndPw: (tvID, tvPW, others, done) => {
+      
+      let newTicket = new Ticket({
+         
+         id: tvID,
+         password: tvPW,
+         lastModifiedTime:new Date,
+         handler: "",
+         status: 0,
+         ctlName: others ? others.ctlName : "",
+         description: others ? others.description : "",
+         creator: others ? others.creator : ""
+         
+      });
+      
+      Ticket.count({}, (err, count) => {
+         if (err) {
+            //habdler
+         }
+         
+         newTicket.ticketNumber = count + 1;
+         
+         newTicket.save((err, ticket) => {
+            if (err)
+               console.warn("Error occured when creating a ticket", err);
+            
+            done(newTicket);
+         });
+         
+      });
+
+   },
+   
+   takeOverTicket: (ticketNo, handler) => {
+      Ticket.updateOne(
+         {"ticketnumber": ticketNo},
+         {"status": 1,
+          "handler": handler
+         },
+         (err, writeOpResult) => {
+            done(err, writeOpResult);
+         }
+      );
+   },
+   
+   finishTicket: (ticketNo) => {
+      Ticket.updateOne(
+         {"ticketnumber": ticketNo},
+         {"status": 1},
+         (err, writeOpResult) => {
+            done(err, writeOpResult);
+         }
+      );
+   }
+}
+
+// Properties//
+// 1. ticketStatus ===> 0 ==> Waiting
+//        ===> 1 ==> Some one is on it
+//        ===> 2 ==> Failed to connect, waiting for feedback from consultant
+//        ===> 3 ==> Done
+
+
 
 
 // Ticket status ===> 
