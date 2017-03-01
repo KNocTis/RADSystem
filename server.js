@@ -20,7 +20,7 @@ import passport from 'passport';
 import flash from 'connect-flash';
 
 import morgan from 'morgan';
-import cookieParser from 'cookie-parser'
+import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 
@@ -128,10 +128,14 @@ app.post("/api/change-ticket-status", isLoggedIn, (req, res) => {
 
 app.post("/api/create-ticket", (req, res) => {
 	console.log("ID: ", req.body.tvID, "PW: ", req.body.tvPW);
+//   console.log(req.body);
    
-   configDB.createNewTicketWithIDAndPw(req.body.tvID, req.body.tvPW, null, (ticket) => {
-      res.json(ticket);
-   })
+   if(req.body.tvID){
+      configDB.createNewTicketWithIDAndPw(req.body.tvID, req.body.tvPW, null, (ticket) => {
+         res.json(ticket);
+      });
+   }
+
    
 //   res.json('hey carlton');
 })

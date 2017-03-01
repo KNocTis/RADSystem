@@ -10,21 +10,22 @@ const waitingWords = [
     "Sending out request ...",
 	"Your request has been processing\nPlease wait and keep Teamviewer running",
 	"Lets's get started"
-]
+];
 
 const alertClassName = [
     "hide",
     "alert alert-warning",
     "alert alert-danger"
-]
+];
 
 const alertText = [
     "",
     "We are currently cannot connect to your computer, and we will keep trying to connect. Please reluanch Teamviewer and keep it runnning.",
     "Sorry, the test is unexpectly terminated. Please request test again if need."
-]
+];
 
 var socket;
+let ticket;
 
 // Properties
 //  channel ==> the channel name of the socket.io
@@ -41,6 +42,7 @@ export default class Reserve extends React.Component {
 	  this.channel = "";
 	  
 	  this.reserveButtonHasBeenClicked = this.reserveButtonHasBeenClicked.bind(this);
+     this.ticketHasBeenReserved = this.ticketHasBeenReserved.bind(this);
   }
 	
 	// Reserved state 
@@ -61,37 +63,47 @@ export default class Reserve extends React.Component {
 		 }));
 	}
 	
-	reserveButtonHasBeenClicked(e) {
-        
-        switch(this.state.reserved) {
-            case 0: 
-                let teamViewerDetail = {
-                    'id': document.getElementById('teamviewer-id').value,
-                    'password': document.getElementById('teamviewer-pw').value
-                }
+   reserveButtonHasBeenClicked(e) {
 
-                //send out request
-                socket.emit('reserve', teamViewerDetail);
+      switch(this.state.reserved) {
 
-                //Change UI
-                this.setState((prevState) => ({
-                    reserved: 1
-                }))
-                break;
-                
-            case 2:
-                socket.emit(this.channel, 'cancel');
-                
-                break;
-        }
+         case 0: 
 
-		
-		//Toolge
-		//Just for testing
-//		this.setState((prevState) => ({
-//			reserved: !prevState.reserved
-//		}));
-	}
+             let teamViewerDetail = {
+                 'id': document.getElementById('teamviewer-id').value,
+                 'password': document.getElementById('teamviewer-pw').value
+             }
+             let ticketHasBeenReserved = this.ticketHasBeenReserved;
+
+             //send out request
+      //                socket.emit('reserve', teamViewerDetail);
+
+            this.setState((prevState) => ({
+               reserved: 1
+            }))
+
+            $.ajax({
+               type: "POST",
+               url: "/api/create-ticket",
+               data: {
+                  tvID: document.getElementById('teamviewer-id').value,
+                  tvPW: document.getElementById('teamviewer-pw').value
+               },
+               success: function( result ) {
+                  console.log("Ticket ceated status: ", result);
+                  ticketHasBeenReserved();
+               }
+            });
+
+             break;
+
+         case 2:
+             socket.emit(this.channel, 'cancel');
+
+             break;
+      }
+
+   }
 	
   componentDidMount() {
 //    this.interval = setInterval(() => this.tick(), 2000);
@@ -138,6 +150,13 @@ export default class Reserve extends React.Component {
 	  })
 //	  socket.on()
   }	 
+   
+   ticketHasBeenReserved() {
+      this.setState((prevState) => ({
+        reserved: 2
+      }))
+   }
+   
 	
 	render () {
 		return (

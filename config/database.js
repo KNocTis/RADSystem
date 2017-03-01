@@ -61,7 +61,7 @@ module.exports = {
 
    },
    
-   takeOverTicket: (ticketNo, handler) => {
+   takeOverTicket: (ticketNo, handler, done) => {
       Ticket.updateOne(
          {"ticketnumber": ticketNo},
          {"status": 1,
@@ -73,10 +73,20 @@ module.exports = {
       );
    },
    
-   finishTicket: (ticketNo) => {
+   finishTicket: (ticketNo, done) => {
       Ticket.updateOne(
          {"ticketnumber": ticketNo},
-         {"status": 1},
+         {"status": 3},
+         (err, writeOpResult) => {
+            done(err, writeOpResult);
+         }
+      );
+   },
+   
+   cancelTicket: (ticketNo, done) => {
+      Ticket.updateOne(
+         {"ticketnumber": ticketNo},
+         {"status": 4},
          (err, writeOpResult) => {
             done(err, writeOpResult);
          }
@@ -89,6 +99,7 @@ module.exports = {
 //        ===> 1 ==> Some one is on it
 //        ===> 2 ==> Failed to connect, waiting for feedback from consultant
 //        ===> 3 ==> Done
+//        ===> 4 ==> Cancelled
 
 
 
