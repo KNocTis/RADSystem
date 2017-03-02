@@ -18,7 +18,15 @@ let ticketSchema = mongoose.Schema({
 // Properties//
 // 1. ticketStatus ===> 0 ==> Waiting
 //        ===> 1 ==> Some one is on it
-//        ===> 2 ==> Failed to connect, waitingh for feedback from cnosultant
+//        ===> 2 ==> Failed to connect, waiting for feedback from consultant
 //        ===> 3 ==> Done
+// Properties//
+// 1. ticketStatus ===> 0 ==> Waiting
+//        ===> 1 ==> Some one is on it
+//        ===> 2 ==> Failed to connect, waiting for feedback from consultant
+//        ===> 3 ==> Done
+//        ===> 4 ==> Cancelled
+//        ===> 5 ==> Terminated by IT
+
 
 module.exports = mongoose.model('Ticket', ticketSchema);

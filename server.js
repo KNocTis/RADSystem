@@ -103,11 +103,11 @@ app.post("/signup", passport.authenticate('local-signup', {
 	})
 );
 
-
 // API ========================================================================
+// API =========================API===========================================
 
 app.get("/api/get-table-list", isLoggedIn, (req, res) => {
-	console.log("User: ", req.user, " requseted for table list");
+	console.log("User: ", req.user.username, " requseted for table list");
    
    configDB.getTicketsList(20, "", (err, data) => {
       if (err) {
@@ -131,14 +131,68 @@ app.post("/api/create-ticket", (req, res) => {
 //   console.log(req.body);
    
    if(req.body.tvID){
-      configDB.createNewTicketWithIDAndPw(req.body.tvID, req.body.tvPW, null, (ticket) => {
+      configDB.createNewTicketWithIDAndPw(req.body.tvID, req.body.tvPW, null, (err, ticket) => {
          res.json(ticket);
       });
    }
 
-   
-//   res.json('hey carlton');
 })
+
+app.post("/api/takeover-ticket", (req, res) => {
+//	console.log("User: ", req.user.local.username, "request to take over the ticket", req.body.ticketNo);
+//   console.log(req.body);
+   
+   let handler = req.user.local.firstname + " " + req.user.local.lastname;
+	console.log("User: ", handler, "request to take over the ticket", req.body.ticketNo);
+
+   if(req.body.ticketNo){
+      configDB.takeOverTicket(req.body.ticketNo, handler, (err, result) => {
+         if (err)
+            console.warn("Error occured when taking over a ticket");
+            
+//         console.log(result.handler);
+         ticketHasBeenModified(result);
+         
+         res.json(result);
+      })
+   }
+
+})
+
+app.post("/api/cancel-ticket", (req, res) => {
+	console.log("Cancelling ticket: ", req.body.ticketNo);
+//   console.log(req.body);
+   
+   if(req.body){
+      configDB.cancelTicket(req.body.ticketNo, (err, ticket) => {
+         ticketHasBeenModified(ticket);
+         res.json("Cancelled");
+      });
+   }
+
+})
+
+app.post("/api/finish-ticket", (req, res) => {
+	console.log("Finishing ticket: ", req.body.ticketNo);
+//   console.log(req.body);
+   
+   if(req.body){
+      configDB.finishTicket(req.body.ticketNo, (err, ticket) => {
+         ticketHasBeenModified(ticket);
+         res.json("finished");
+      });
+   }
+
+})
+
+// API ========================================================================
+// API =========================API END===========================================
+
+
+let ticketHasBeenModified = (ticket) => {
+   console.log("Socketio broadcast in channel ", ticket.ticketNumber, "for ticket", ticket);
+   io.emit(ticket.ticketNumber, ticket);
+}
 
 //app.listen(port, function(){
 //	console.log("magic happening on port:" + port);

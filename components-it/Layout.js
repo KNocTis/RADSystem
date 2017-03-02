@@ -15,7 +15,7 @@ export default class Layout extends React.Component {
 			  <header>
 				 <NavBar list={navItems}/>
 			  </header>
-			  <div className="jumbotron text-center">{this.props.children}</div>
+			  <div className="jumbotron">{this.props.children}</div>
 			  <footer>
 				 <p className="text-center">
 					This is a demo app of <strong>Remoting Assistant</strong> <strong></strong>.

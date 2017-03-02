@@ -9,7 +9,7 @@ module.exports = {
    //=====================================
    getTicketsList: (quantity, from, done) => {
                 
-      Ticket.find().sort({'status': 1}).limit(quantity).exec((err, data) => {
+      Ticket.find().sort({'status': 1, 'ticketNumber': -1}).limit(quantity).exec((err, data) => {
          done(err, data);
       });
       
@@ -54,7 +54,7 @@ module.exports = {
             if (err)
                console.warn("Error occured when creating a ticket", err);
             
-            done(newTicket);
+            done(err, newTicket);
          });
          
       });
@@ -62,33 +62,54 @@ module.exports = {
    },
    
    takeOverTicket: (ticketNo, handler, done) => {
-      Ticket.updateOne(
-         {"ticketnumber": ticketNo},
+      Ticket.findOneAndUpdate(
+         {"ticketNumber": ticketNo},
          {"status": 1,
           "handler": handler
          },
-         (err, writeOpResult) => {
-            done(err, writeOpResult);
+         {new: true},
+         (err, result) => {
+            if(err) {
+               console.log("Error occured when taking a ticket", err);
+               return false;
+            }
+            
+            console.log("Ticket ", result.ticketNumber, "taken over by ", result.handler);
+            done(err, result);
          }
       );
    },
    
    finishTicket: (ticketNo, done) => {
-      Ticket.updateOne(
-         {"ticketnumber": ticketNo},
+      Ticket.findOneAndUpdate(
+         {"ticketNumber": ticketNo},
          {"status": 3},
-         (err, writeOpResult) => {
-            done(err, writeOpResult);
+         {new: true},
+         (err, result) => {
+            if(err) {
+               console.log("Error occured when finishing a ticket", err);
+               return false;
+            }
+            
+            console.log("Ticket ", result.ticketNumber, "finished by ", result.handler);
+            done(err, result);
          }
       );
    },
    
    cancelTicket: (ticketNo, done) => {
-      Ticket.updateOne(
-         {"ticketnumber": ticketNo},
+      Ticket.findOneAndUpdate(
+         {"ticketNumber": ticketNo},
          {"status": 4},
-         (err, writeOpResult) => {
-            done(err, writeOpResult);
+         {new: true},
+         (err, result) => {
+            if(err) {
+               console.log("Error occured when cancelling a ticket", err);
+               return false;
+            }
+            
+            console.log("Ticket ", result.ticketNumber, "cancanelled ");
+            done(err, result);
          }
       );
    }
@@ -104,12 +125,11 @@ module.exports = {
 
 
 
-// Ticket status ===> 
-//        ===> 0 ==> No one on it
+// Properties//
+// 1. ticketStatus ===> 0 ==> Waiting
 //        ===> 1 ==> Some one is on it
-//        ===> 2 ==> Ticket has been done
-//        ===> 3 ==> I am on it
-//        ===> 4 ==> TBD
+//        ===> 2 ==> Failed to connect, waitingh for feedback from cnosultant
+//        ===> 3 ==> Done
 
 
 //Database API list

@@ -8,22 +8,32 @@ import React from 'react';
 	
 	// Reserved state 
 	// 0 ===> not reserved or reserving
-	// 1 ===> wait for reserved
+	// 1 ===> waiting for reserved
 	// 2 ===> reserved, waiting to be tested
 	// 3 ===> ticket done
+	// 4 ===> Someone took the test, and we will be connnected soon
+	// 5 ===> Ticket is canncelled
+   // 6 ===> Ticket is cancelling
+
 
 const buttonText = [
 	"Reserve",
 	"Reserving",
 	"Cancel",
-	"Cancel"
+	"Reserve again",
+   "Cancel",
+   "Reserve again",
+   "Cancelling"
 ];
 
 const buttonClass = [
 	"btn btn-default",
 	"btn btn-default disabled",
 	"btn btn-danger",
-    "btn btn-danger disabled"
+   "btn btn-default",
+   "btn btn-danger disabled",
+   "btn btn-default",
+   "btn btn-danger disabled"
 ];
 
 export default class ReserveButton extends React.Component {

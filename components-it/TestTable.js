@@ -6,70 +6,42 @@ import TestRow from './TestRow.js';
 
 
 // Properties
-// testListArray ==> Array type, each item is the ticket number
+// testListArray ==> tickets
+let socket;
+let countOfNewTickets = 0;
 
 export default class TestTable extends React.Component {
     
-    constructor (props) {
-        super(props);
-        
-		 this.socket = io();
-		 
-		 this.state = {
-			 testListArray: ["3222344", "23422"],
-			 hasNewTickets: false
-		 }
-		 
-        this.handleNextTicketsButton = this.handleNextTicketsButton.bind(this);
-    }
+   constructor (props) {
+      super(props);
+
+      socket = io();
+
+      this.state = {
+         testListArray: [],
+         hasNewTickets: false
+      }
+
+      this.handleNextTicketsButton = this.handleNextTicketsButton.bind(this);
+   }
     
     createTestRows(item, index) {
-        return <TestRow ticketNo={item} key={index}/>
+        return <TestRow ticket={item} key={index}/>
 //        return <TestRow ticketNo={item.ticketNo} ticketRequestedTime={item.ticketRequestedTime} id={item.id} password={item.password} ticketStatus={item.ticketStatus} handler={item.handler} />
     }
     
     componentDidMount() {
-        this.socket.on("table list", msg => {
-            if (!msg.type) {
-                console.warn("No content transfered in channel 'table list'");
-                return false;
-            }
-            
-            //handle
-            switch (msg.type) {
-                case 'first page':
-                    //handle
-                    this.setState((prevState) => ({
-                            testListArray: msg.content
-                    }))
-                    break;
-                case 'next':
-                    //handle
-                    this.setState((prevState) => ({
-                            testListArray: prevState.testListArray.concat(msg.content)
-                    }))
-                    break;
-                case 'previous':
-                    this.setState((prevState) => ({
-                            testListArray: msg.content.concat(prevState.testListArray)
-                    }))
-                    break;
-                case 'message':
-                    this.setState((prevState) => ({
-                            hasNewTickets: true
-                    }))
-                    break;
-                default:
-                    console.warn("Can't handle this type of messgae in Channel 'table list'");
-                    break;
-            }
-        })
         
-        this.socket.emit("table list", {
-            type: 'first page'
-        })
-        
-        this.getTableList();
+         this.getTableList(null, (tableList) => {
+            this.setState((prevState) => ({
+               testListArray: tableList
+            }));
+//            console.log(tableList);
+            socket.on('new-ticket-created', msg => {
+               console.log("A new ticket created");
+               countOfNewTickets += 1;
+            })
+         });
     }
     
     handleNextTicketsButton () {
@@ -82,18 +54,19 @@ export default class TestTable extends React.Component {
 //        this.setState((prevState))
     }
    
-   getTableList(number) {
+   getTableList(number, done) {
 
       $.ajax({
-        url: "/api/get-table-list",
-        data: {
-          
-        },
-        success: function(result) {
-          console.log(result);
-        }
+         url: "/api/get-table-list",
+         data: {
+
+         },
+         success: function(result) {
+            console.log("Ticket list got! \n", result);
+            done(result);
+         }
       });
-      
+
    }
     
     render () {
