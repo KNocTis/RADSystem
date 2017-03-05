@@ -38,7 +38,7 @@ app.use(bodyParser.json()); // get information from html forms
 app.use(bodyParser.urlencoded({ extended: true }));
 // required for passport
 app.use(session({
-    secret: 'ilovescotchscotchyscotchscotch', // session secret
+    secret: 'fuuuuuuuuuullstackpmit', // session secret
     resave: true,
     saveUninitialized: true
 }));
@@ -132,6 +132,10 @@ app.post("/api/create-ticket", (req, res) => {
    
    if(req.body.tvID){
       configDB.createNewTicketWithIDAndPw(req.body.tvID, req.body.tvPW, null, (err, ticket) => {
+         broadcastWaitingStatus();
+         
+         io.emit('new-ticket-created', ticket);
+         
          res.json(ticket);
       });
    }
@@ -143,28 +147,40 @@ app.post("/api/takeover-ticket", (req, res) => {
 //   console.log(req.body);
    
    let handler = req.user.local.firstname + " " + req.user.local.lastname;
-	console.log("User: ", handler, "request to take over the ticket", req.body.ticketNo);
+	console.log("User: ", handler, "request to take over the ticket", req.body.ticketNumber);
 
-   if(req.body.ticketNo){
-      configDB.takeOverTicket(req.body.ticketNo, handler, (err, result) => {
-         if (err)
-            console.warn("Error occured when taking over a ticket");
-            
-//         console.log(result.handler);
-         ticketHasBeenModified(result);
+   if(req.body.ticketNumber){
+          
+      configDB.takeOverTicket(req.body.ticketNumber, handler, (err, ticket) => {
+         //If someone has taken over or other errors
+         if (err){
+            res.json(err);
+            return false; //Break  ==========================
+         }
          
-         res.json(result);
-      })
+         //Send broadcast
+         ticketHasBeenModified(ticket);
+         
+         //Check waiting count and broadcast
+         configDB.getWaitingTickets((err, tickets) => {
+            if (err) {
+               console.warn("Error occured when querying waiting tickets");
+               return false;
+            }
+            
+            broadcastWaitingStatus(tickets);
+         });
+         
+      });
    }
-
 })
 
 app.post("/api/cancel-ticket", (req, res) => {
-	console.log("Cancelling ticket: ", req.body.ticketNo);
+	console.log("Cancelling ticket: ", req.body.ticket.ticketNumber);
 //   console.log(req.body);
    
    if(req.body){
-      configDB.cancelTicket(req.body.ticketNo, (err, ticket) => {
+      configDB.cancelTicket(req.body.ticket.ticketNumber, req.body.type, (err, ticket) => {
          ticketHasBeenModified(ticket);
          res.json("Cancelled");
       });
@@ -173,18 +189,32 @@ app.post("/api/cancel-ticket", (req, res) => {
 })
 
 app.post("/api/finish-ticket", (req, res) => {
-	console.log("Finishing ticket: ", req.body.ticketNo);
+	console.log("Finishing ticket: ", req.body.ticketNumber);
 //   console.log(req.body);
    
    if(req.body){
-      configDB.finishTicket(req.body.ticketNo, (err, ticket) => {
+      configDB.finishTicket(req.body.ticketNumber, (err, ticket) => {
+         if (err) {
+            res.json(err);
+            return false;
+         }
+         
          ticketHasBeenModified(ticket);
-         res.json("finished");
       });
    }
 
 })
 
+app.post("/api/push-noti-for-ticket", (req, res) => {
+	console.log("Pushing notification for ticket: ", req.body.ticketNumber);
+//   console.log(req.body);
+   
+   if(req.body.ticketNumber){
+      io.emit(req.body.ticketNumber, {notification: req.body.notification});
+      res.send("um hum");
+   }
+
+})
 // API ========================================================================
 // API =========================API END===========================================
 
@@ -192,6 +222,19 @@ app.post("/api/finish-ticket", (req, res) => {
 let ticketHasBeenModified = (ticket) => {
    console.log("Socketio broadcast in channel ", ticket.ticketNumber, "for ticket", ticket);
    io.emit(ticket.ticketNumber, ticket);
+}
+
+
+let broadcastWaitingStatus = () => {
+   
+   configDB.getWaitingTickets((err, tickets) => {
+      let broadcastForTicket = (ticket, index) => {      
+         io.emit(ticket.ticketNumber, {waitingCount: index});
+      }
+
+      tickets.map(broadcastForTicket);
+   })
+
 }
 
 //app.listen(port, function(){
@@ -241,7 +284,7 @@ io.on("connection", socket => {
 //    socket.on();
     
     socket.on('get ticket info', ticketNo => {
-		 console.log("Being asked for ticket info of ", ticketNo)
+		 console.log("Being asked for ticket info of ", ticketNo);
         //get info of ticket from Datebase
         //
         //callback below

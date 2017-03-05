@@ -3,17 +3,11 @@
 import React from 'react';
 import { Link } from 'react-router';
 import ReserveButton from './ReseveButton.js';
+import StatusPrompt from './StatusPrompt.js';
 import io from 'socket.io-client';
+import Push from 'push.js';
 
-const waitingWords = [
-   "Fill in ID and Password of Teamviewer, and click \"submit\" button requesting for test",
-   "Sending out request ...",
-   "Your request has been processing\nPlease wait and keep Teamviewer running",
-   "Test is finished",
-   "One of IT took the test, and you will be connected soon.",
-   "Test is cancelled",
-   "Canceling the test..."
-];
+
 
 const alertClassName = [
     "hide",
@@ -27,8 +21,14 @@ const alertText = [
     "Sorry, the test is unexpectly terminated. Please request test again if need."
 ];
 
+const hexColor = {
+   red: "#e73e3a", //银朱
+   green: '#e4cf8e', //甘草黄
+   yellow: '#90caaf' //三绿
+}
+
 let socket;
-let ticket
+let ticket;
 
 // Properties
 //  channel ==> the channel name of the socket.io
@@ -39,7 +39,8 @@ export default class Reserve extends React.Component {
       this.state = {
          ticketStatus: 'home',
          reserved: 0,
-         alert: 0
+         alert: 0,
+         waitingCount: 9999
       };
 
       this.channel = "";
@@ -64,22 +65,32 @@ export default class Reserve extends React.Component {
 	// 2 ===> test terminated unexpectly
 	// 3 ===> ticket done
     
-	tick(){
-		this.setState((prevState) => ({
-			ticketStatus: "waiting"
-		 }));
-	}
+	validTeamviewerDetail(){
+      console.log("length of tvID: ", document.getElementById('teamviewer-id').value.length);
+      if (document.getElementById('teamviewer-id').value.length >= 9 && document.getElementById('teamviewer-id').value.length <= 10){
+         return true;
+      }
+      
+      return false;
+   }
 	
    reserveButtonHasBeenClicked(e) {
 
       switch(this.state.reserved) {
 
          case 0: // ======> Submit test request
-
+            if(!this.validTeamviewerDetail()) {
+               console.warn("Invalid teamviewer ID and password!");
+               //Pop up warning
+               alert("The ID and password you filled in may not be right, please check it again before submit, thanks.");
+               break;
+            }
+            
              let teamViewerDetail = {
                  'id': document.getElementById('teamviewer-id').value,
                  'password': document.getElementById('teamviewer-pw').value
              }
+             
              let ticketHasBeenReserved = this.ticketHasBeenReserved;
 
              //send out request
@@ -117,7 +128,10 @@ export default class Reserve extends React.Component {
             $.ajax({
                type: "POST",
                url: "/api/cancel-ticket",
-               data: ticket,
+               data: {
+                  ticket: ticket,
+                  type: 0
+               },
                success: function( result ) {
                   console.log("Ticket ceated status: ", result);
                   ticketHasBeenRCancelled();
@@ -132,47 +146,7 @@ export default class Reserve extends React.Component {
   componentDidMount() {
 //    this.interval = setInterval(() => this.tick(), 2000);
 	  socket = io();
-	  
-//	  socket.on('reserve', (msg) => {
-//		  
-//          if (!msg) {
-//              console.warn("Server can not create test request");
-//				 
-//                this.setState((prevState) => ({
-//                    reserved: 0
-//                }))
-//					 
-//              return false;
-//          } 
-//          
-//          //run it when response is correct
-//		  socket.on(msg, msg => {
-//			  // msg.reserved 
-//              // msg.alert
-//              if (msg == 'cancelled') {
-//					  this.setState((prevState) => ({
-//							reserved: 0
-//					  }));
-//					  
-//					  return;
-//				  }
-//			  
-//              this.setState((prevState) => ({
-//                  reserved: msg.reserved ? msg.reserved : prevState.reserved,
-//                  alert: msg.alert ? msg.alert : prevState.alert
-//              }));
-//              
-//		  })
-//		  
-//		  this.setState((prevState) => ({
-//			  reserved: 2
-//		  }));
-//          
-//          this.channel = msg;
-//		  
-//		  console.log("socket channel", msg, " is on");
-//	  })
-////	  socket.on()
+
   }
    
    ticketHasBeenReserved() {
@@ -184,12 +158,50 @@ export default class Reserve extends React.Component {
          
          console.log("Socketio broadcast messgae received", resultTicket);
          
+         if (resultTicket.waitingCount) {
+            
+            //handle
+            this.setState((prevState) => ({
+               waitingCount: resultTicket.waitingCount
+            }))
+            
+            return true;
+         }
+         
+         if (resultTicket.notification) {
+           // Let's check if the browser supports notifications
+           if (!("Notification" in window)) {
+             alert("This browser does not support desktop notification");
+           }
+
+           // Let's check whether notification permissions have already been granted
+           else if (Notification.permission === "granted") {
+             // If it's okay let's create a notification
+             var notification = new Notification("Hi there!");
+           }
+
+           // Otherwise, we need to ask the user for permission
+           else if (Notification.permission !== "denied") {
+             Notification.requestPermission(function (permission) {
+               // If the user accepts, let's create a notification
+               if (permission === "granted") {
+                 var notification = new Notification("Hi there!");
+               }
+             });
+           }
+
+           // At last, if the user has denied notifications, and you 
+           // want to be respectful there is no need to bother them any more.
+         }
+         
+         
          switch (resultTicket.status) {
             case 1: //====================> Some one is on it
                this.setState((prevState) => ({
                   reserved: 4,
                   alert: 0
                }))
+               window.onbeforeunload = ()=>{};
                break;
             case 2: //============> Failed to connect, waiting for feedback from cnosultant
                //Pop alert
@@ -213,6 +225,21 @@ export default class Reserve extends React.Component {
 
       });
       
+      window.onbeforeunload = (e) => {
+         if (ticket.status == 0 || ticket.status == 2) {
+            window.onbeforeunload = (e) => {
+               $.ajax({
+                  type: "POST",
+                  url: "/api/cancel-ticket",
+                  data: {
+                     ticket: ticket,
+                     type: 1
+                  }
+               });
+            }
+         }
+      }
+      
       console.log("Socketio channel created ", ticket.ticketNumber);
    }
    
@@ -224,27 +251,25 @@ export default class Reserve extends React.Component {
 	
 	render () {
 		return (
-			<form id="reserve-request">
-				<div className="id-password">
-				  <div className="form-group">
-					 <label htmlFor="teamviewer-id">TeamViewer ID</label>
-					 <input type="number" className="form-control text-center" id="teamviewer-id" placeholder="ID"/>
-				  </div>
-				  <div className="form-group">
-					 <label htmlFor="teamviewer-pw">Password</label>
-					 <input type="text" className="form-control text-center" id="teamviewer-pw" placeholder="Password"/>
-				  </div>
-				</div>
-			  <div className="form-group">
-				 <p className="help-block">{waitingWords[this.state.reserved]}</p>
-			  </div>
-			  <div>
-				  <ReserveButton reserved={this.state.reserved} onClick={this.reserveButtonHasBeenClicked} />
-			  </div>
-                
-                <div className={alertClassName[this.state.alert]} role="alert">{alertText[this.state.alert]}</div>
-                
-			</form>
+         <div className="jumbotron text-center">
+            <form id="reserve-request">
+               <div className="id-password">
+                 <div className="form-group">
+                   <label htmlFor="teamviewer-id">TeamViewer ID</label>
+                   <input type="number" className="form-control text-center" id="teamviewer-id" placeholder="ID"/>
+                 </div>
+                 <div className="form-group">
+                   <label htmlFor="teamviewer-pw">Password</label>
+                   <input type="text" className="form-control text-center" id="teamviewer-pw" placeholder="Password"/>
+                 </div>
+               </div>
+              <StatusPrompt reservationStatus={this.state.reserved} waitingCount={this.state.waitingCount}/>
+              <div>
+                 <ReserveButton reserved={this.state.reserved} onClick={this.reserveButtonHasBeenClicked} />
+              </div>
+                   <div className={alertClassName[this.state.alert]} role="alert">{alertText[this.state.alert]}</div>
+            </form>
+         </div>
 		);
 	}
 }

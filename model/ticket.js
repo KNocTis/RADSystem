@@ -27,6 +27,6 @@ let ticketSchema = mongoose.Schema({
 //        ===> 3 ==> Done
 //        ===> 4 ==> Cancelled
 //        ===> 5 ==> Terminated by IT
-
+//        ===> 6 ==> Unexpectedly closed
 
 module.exports = mongoose.model('Ticket', ticketSchema);

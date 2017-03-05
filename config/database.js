@@ -1,4 +1,5 @@
 import Ticket from '../model/ticket.js';
+import moment from 'moment';
 // config/database.js
 module.exports = {
 
@@ -25,62 +26,174 @@ module.exports = {
       })
    },
    
+   getWaitingTickets: (done) => {
+      Ticket.find({"status": 0}).select('ticketNumber').exec((err, data) => {
+         done(err, data);
+      });
+   },
+   
    //=====================================
    //==============Submit==================
    //=====================================
    createNewTicketWithIDAndPw: (tvID, tvPW, others, done) => {
       
-      let newTicket = new Ticket({
-         
-         id: tvID,
-         password: tvPW,
-         lastModifiedTime:new Date,
-         handler: "",
-         status: 0,
-         ctlName: others ? others.ctlName : "",
-         description: others ? others.description : "",
-         creator: others ? others.creator : ""
-         
+      //async
+      process.nextTick(() => {
+         //Check if there is a ticekt with same ID
+         Ticket.findOne(
+            {"id": tvID},
+            (err, ticket) => {
+               if(err){
+                  console.log("Error occured when finding a ticket", err);
+                  return false;
+               }
+
+               ///======================================
+               //If the ticket is cancelled within 2 hours
+               if(ticket){
+                  if (moment().subtract(2, "hours").isBefore(ticket.lastModifiedTime)){
+                     //Pull the ticket to the top of query, then return
+                     ticket.status = 0;
+                     ticket.save((err, updatedTicket) => {
+                        done(err, updatedTicket);
+                        return true
+                     })
+                  }
+               }
+
+               ///=================================
+               //If there is no ticket with same ID
+
+               //Create a new one
+               let newTicket = new Ticket({
+
+                  id: tvID,
+                  password: tvPW,
+                  lastModifiedTime:new Date,
+                  handler: "",
+                  status: 0,
+                  ctlName: others ? others.ctlName : "",
+                  description: others ? others.description : "",
+                  creator: others ? others.creator : ""
+
+               });
+
+               //Get the number of tickets in database
+               //and set the ticket number
+               Ticket.count({}, (err, count) => {
+                  if (err) {
+                     //habdler
+                     console.warn("Error occured when count a tickets");
+                     return false;
+                  }
+
+                  newTicket.ticketNumber = count + 1;
+
+                  newTicket.save((err, ticket) => {
+                     if (err)
+                        console.warn("Error occured when creating a ticket", err);
+
+                     done(err, newTicket);
+                  });
+
+               });
+
+            }
+         );
       });
+   },
+   
+   takeOverTicket: (ticketNo, handler, done) => {
       
-      Ticket.count({}, (err, count) => {
-         if (err) {
-            //habdler
-         }
-         
-         newTicket.ticketNumber = count + 1;
-         
-         newTicket.save((err, ticket) => {
-            if (err)
-               console.warn("Error occured when creating a ticket", err);
-            
-            done(err, newTicket);
-         });
-         
+      //async
+      process.nextTick(() => {
+         //
+         Ticket.findOne(
+            {"ticketNumber": ticketNo},
+            (err, ticket) => {
+               if(err) {
+                  console.log("Error occured when finding a ticket", err);
+                  return false;
+               }
+               
+               ///=================================
+               //If the ticket NOT found
+               if (!ticket) {
+                  done("Ticket ", ticketNo, " not found");
+               }
+               
+               ///=================================
+               //If the ticket has NOT been taken over yet
+               if (ticket.status == 0 || ticket.status == 2) {
+                  ticket.status = 1;
+                  ticket.handler = handler;
+                  
+                  ticket.save((err, updatedTicket) => {
+                     if(err) {
+                        console.warn("Error occured when saving a ticket", err);
+                        return false;
+                     }
+                     
+                     console.log("Ticket ", updatedTicket.ticketNumber, "taken over by ", updatedTicket.handler);
+                     done(null, updatedTicket);
+                     return true;
+                  })
+               }
+               
+               ///=================================
+               //If the ticket has AlLREADY been taken over or done
+               done("Ticket ", ticketNo, "might have been taken over by someone or it's already done");
+               
+            }
+         );
       });
 
    },
    
-   takeOverTicket: (ticketNo, handler, done) => {
-      Ticket.findOneAndUpdate(
-         {"ticketNumber": ticketNo},
-         {"status": 1,
-          "handler": handler
-         },
-         {new: true},
-         (err, result) => {
-            if(err) {
-               console.log("Error occured when taking a ticket", err);
-               return false;
-            }
-            
-            console.log("Ticket ", result.ticketNumber, "taken over by ", result.handler);
-            done(err, result);
-         }
-      );
-   },
-   
    finishTicket: (ticketNo, done) => {
+      
+      //async
+      process.nextTick(() => {
+         //
+         Ticket.findOne(
+            {"ticketNumber": ticketNo},
+            (err, ticket) => {
+               if(err) {
+                  console.log("Error occured when finding a ticket", err);
+                  return false;
+               }
+               
+               ///=================================
+               //If the ticket NOT found
+               if (!ticket) {
+                  done("Ticket ", ticketNo, " not found");
+               }
+               
+               ///=================================
+               //The can be done only when someone is on it
+               if (ticket.status == 1) {
+                  ticket.status = 3;
+                  
+                  ticket.save((err, updatedTicket) => {
+                     if(err) {
+                        console.warn("Error occured when saving a ticket", err);
+                        return false;
+                     }
+                     
+                     console.log("Ticket ", updatedTicket.ticketNumber, "is done");
+                     done(null, updatedTicket);
+                     return true;
+                  })
+               }
+               
+               ///=================================
+               //If the ticket has AlLREADY been taken over or done
+               done("Ticket ", ticketNo, "cannot be finished, because no one is on it");
+               
+            }
+         );
+      }); 
+      
       Ticket.findOneAndUpdate(
          {"ticketNumber": ticketNo},
          {"status": 3},
@@ -97,21 +210,47 @@ module.exports = {
       );
    },
    
-   cancelTicket: (ticketNo, done) => {
-      Ticket.findOneAndUpdate(
-         {"ticketNumber": ticketNo},
-         {"status": 4},
-         {new: true},
-         (err, result) => {
-            if(err) {
-               console.log("Error occured when cancelling a ticket", err);
-               return false;
+   
+   // type ===> 0 or undefined ==> normally cancel
+   //           1 ===============> expectedly cancel
+   //           2 ===============> cancelled by IT
+   cancelTicket: (ticketNo, type, done) => {
+ 
+      //async
+      process.nextTick(() => {
+         //Find the ticket first
+         Ticket.findOne(
+            {"ticketNumber": ticketNo},
+            (err, ticket) => {
+               if(err) {
+                  console.log("Error occured when finding a ticket", err);
+                  return false;
+               }
+
+               //Ticket can be cancelled ONLY when ticket status == 1 2 3
+               if (ticket.status == 0 || ticket.status == 1 || ticket.status == 2) {
+                  //Determine cancellation type
+                  let status = 4;
+                  if (type == 1){
+                        status = 6;
+                  } else if (type == 2) {
+                        status = 5;
+                  }
+                  
+                  ticket.status = status;
+                  
+                  ticket.save((err, updatedTicket) => {
+                     done(err, updatedTicket);
+                     return true;
+                  })
+               } else {
+                  console.log("Ticket ", ticket.ticketNumber, "can't be cancelled, since it's already cancelled or done")
+               }
+
             }
-            
-            console.log("Ticket ", result.ticketNumber, "cancanelled ");
-            done(err, result);
-         }
-      );
+         );
+      });
+
    }
 }
 
@@ -203,15 +342,6 @@ module.exports = {
 //
 //
 //
-
-
-
-
-
-
-
-
-
 
 
 

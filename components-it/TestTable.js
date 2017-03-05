@@ -8,7 +8,7 @@ import TestRow from './TestRow.js';
 // Properties
 // testListArray ==> tickets
 let socket;
-let countOfNewTickets = 0;
+//let countOfNewTickets = 0;
 
 export default class TestTable extends React.Component {
     
@@ -27,22 +27,50 @@ export default class TestTable extends React.Component {
     
     createTestRows(item, index) {
         return <TestRow ticket={item} key={index}/>
-//        return <TestRow ticketNo={item.ticketNo} ticketRequestedTime={item.ticketRequestedTime} id={item.id} password={item.password} ticketStatus={item.ticketStatus} handler={item.handler} />
+
     }
     
-    componentDidMount() {
-        
-         this.getTableList(null, (tableList) => {
-            this.setState((prevState) => ({
-               testListArray: tableList
-            }));
-//            console.log(tableList);
-            socket.on('new-ticket-created', msg => {
-               console.log("A new ticket created");
-               countOfNewTickets += 1;
-            })
+   componentDidMount() {
+
+      let ticketHasBeenUpdated = (ticket) => {
+         
+         //If the message is not about ticket modification
+         if(!ticket.ticketNumber) {
+            return false;
+         }
+         
+         this.state.testListArray.map((ticketItem, index) => {
+            if (ticketItem.ticketNumber == ticket.ticketNumber) {
+               ticketItem.lastModifiedTime = ticket.lastModifiedTime;
+               ticketItem.id = ticket.id;
+               ticketItem.password = ticket.password;
+               ticketItem.handler = ticket.handler;
+               ticketItem.status = ticket.status;
+            }
          });
-    }
+         
+         this.setState(this.state.testListArray);
+      }
+
+      this.getTableList(null, (tableList) => {
+         this.setState((prevState) => ({
+            testListArray: tableList
+         }));
+      //            console.log(tableList);
+         socket.on('new-ticket-created', ticket => {
+            socket.on(ticket.ticketNumber, ticketHasBeenUpdated);
+            this.state.testListArray.unshift(ticket);
+            this.setState(this.state.testListArray);
+         })
+
+         let openChannelForTicket = (ticket, index) => {
+            socket.on(ticket.ticketNumber, ticketHasBeenUpdated);
+//            console.log("socket channel opened on ", ticket.ticketNumber);
+         }
+
+         tableList.map(openChannelForTicket);
+      });
+   }
     
     handleNextTicketsButton () {
         this.socket.emit("table list", "next");

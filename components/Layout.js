@@ -6,8 +6,7 @@ import NavBar from './NavBar.js'
 
 const navItems = [
     {link: "reserve", text: "Reserve Test"},
-    {link: "how-to-use", text: "How to use"},
-    {link: "downloads", text: "Downloads"}
+    {link: "#how-to-use", text: "Instruction"}
 ]
 
 export default class Layout extends React.Component {
@@ -17,7 +16,7 @@ export default class Layout extends React.Component {
 			  <header>
 				 <NavBar list={navItems}/>
 			  </header>
-			  <div className="jumbotron text-center">{this.props.children}</div>
+			  <div className="">{this.props.children}</div>
 			  <footer>
 				 <p className="text-center">
 					This is a demo app of <strong>Remoting Assistant</strong> <strong></strong>.

@@ -5,8 +5,43 @@
     <title>TutorABC test support</title>
 <!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="../public/lib/bootstrap.min.css" crossorigin="anonymous">
+      
+   <link rel="stylesheet" href="../public/lib/font-awesome.min.css">
 	
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+      
+      <script src="../public/lib/jquery-3.1.1.min.js"></script>
+      <script src="../public/lib/bootstrap.min.js"></script>
+      
+      <script type="text/javascript">
+         window.onbeforeunload = function(e) {
+            $.ajax({
+               url: "http://localhost:8085/api/get-table-list",
+               data: {
+
+               },
+               success: function(result) {
+
+               }
+            });
+         };
+         
+         window.onunload = function(e) {
+            console.log("spsdfs445t3534534534p");
+            
+            $.ajax({
+               url: "http://localhost:8085/api/get-table-list",
+               data: {
+
+               },
+               success: function(result) {
+
+               }
+            });
+            
+         }
+      </script>      
+      
 		 <style>
 	/*        body        { padding-top:80px; }*/
 			 .id-password div {
@@ -14,7 +49,7 @@
 			 }
           
 .id-password div {
- display: inline-block;
+   display: inline-block;
 }
 
 .table-borderless td, .table-borderless th {
@@ -38,17 +73,25 @@
  }
 
  .jumbotron-trans {
-	 background-color: #f9f9f9;
+	 background: none;
  }
 
  .new-tabs {
 	  margin-left: 45%;
  }
           
+/*
+          .fa {
+             color: #7fecad;
+          }
+*/
+          
 		 </style>
 	</head>
 	
 	<body>
+      
+
 
 			<nav class="navbar navbar-default">
 			  <div class="container-fluid">
@@ -80,14 +123,15 @@
 				</div>
 
 			  <div class="form-group">
-				 <p class="help-block">Waiting words</p>
+              <i class="fa fa-spinner fa-pulse fa-5x fa-fw" style="color:#e4cf8e;"></i>
+<span class="sr-only">Loading...</span>
+				 <p class="help-block"  style="font-size:16px;">Waiting words</p>
 			  </div>
 
 			  <div class="checkbox">
-				 <button type="submit" class="btn btn-default disabled">Submit</button>
+				 <button type="submit" class="btn btn-danger btn-lg">Cancel</button>
 			  </div>
 
-                <div class="alert alert-success" role="alert">test test test</div>
                 
 			</form>
 		</div>
@@ -115,6 +159,26 @@
       
 <div class="jumbotron"><div class="table-container"><ul class="nav nav-pills new-tabs hide" role="tablist"><li role="presentation"><a role="button"><!-- react-text: 16 -->New <!-- /react-text --><span class="badge">3</span></a></li></ul><table class="table table-borderless"><thead><tr><th>#</th><th>Time</th><th>ID</th><th>Password</th><th>Status</th><th>Handler</th></tr></thead><tbody><tr><th scope="row">1</th><td>2017-02-28T12:11:41.881Z</td><td>123</td><td>123</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">2</th><td>2017-02-28T12:13:30.605Z</td><td>1233534534</td><td>I am so happy</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">3</th><td>2017-02-28T15:45:30.445Z</td><td></td><td></td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">4</th><td>2017-02-28T15:49:49.556Z</td><td>123</td><td>1231231</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">5</th><td>2017-03-01T05:54:44.531Z</td><td>123</td><td>1231231</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">6</th><td>2017-03-01T08:24:06.912Z</td><td>123</td><td>3333</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">7</th><td>2017-03-01T08:25:55.381Z</td><td>123131</td><td>tdsa</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">8</th><td>2017-03-01T08:26:19.448Z</td><td>123123</td><td>ssss</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">9</th><td>2017-03-01T08:40:11.474Z</td><td>12311</td><td>wwe33</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">10</th><td>2017-03-01T08:45:23.393Z</td><td>12311</td><td>3344</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">11</th><td>2017-03-01T08:46:37.011Z</td><td>12333</td><td>44</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">12</th><td>2017-03-01T08:53:02.256Z</td><td>232</td><td>111</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">13</th><td>2017-03-01T09:35:07.662Z</td><td>12322</td><td>223ew</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">14</th><td>2017-03-01T09:35:15.609Z</td><td>12322</td><td>223ew</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr></tbody></table><p class="text-center"><a><span class="glyphicon glyphicon-menu-down"></span></a></p></div></div>
       
+			<div class="jumbotron text-center">
+				<p>1. Click <Link className="" to="/test">here</Link> to downlaod TeamViewer into your computer.</p>
+				<p>2. Install and keep it runnning on your computer</p>
+				<p>3. Go to <Link className="" to="/reserve">Reserve Test Page</Link> requesting test</p>
+				<p>4. XXXXXXXXXX XXXXXXXXXX XXXXXXXXXX XXXXXXXXXX </p>
+				<p>5. ASFDAS FGASG EGRDGESGSE G ES G </p>
+				<p><i class="fa fa-circle-o-notch" aria-hidden="true"></i>6. dgs ds ge ge grs gdf gsd gregrshbdghdsghrs er </p>
+            
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style=""></i>
+<span class="sr-only">Loading...</span>
+            
+            
+           
+			</div>
+      
+<div class="alert alert-success" role="alert"></div>
+<div class="alert alert-warning" role="alert"><i class="fa fa-spinner fa-pulse fa-2x fa-fw" style=""></i>
+<span class="sr-only">Loading...</span></div>
+<div class="alert alert-danger" role="alert"><i class="fa fa-spinner fa-pulse fa-2x fa-fw" style=""></i>
+<span class="sr-only">Loading...</span></div> 
       
 	</body>
 </html>
