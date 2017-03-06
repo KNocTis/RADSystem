@@ -14,9 +14,15 @@ module.exports = {
          done(err, data);
       });
       
+
+      
    },
 
-   getTicketsFrom: (from, number, done) => {
+   getTicketsFrom: (from, quantity, done) => {
+      
+      Ticket.find().sort({'status': 1, 'ticketNumber': -1}).where('ticketNumber').lt(from).limit(quantity).exec((err, data) => {
+         done(err, data);
+      });
       
    },
    

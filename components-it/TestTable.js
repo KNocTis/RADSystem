@@ -128,14 +128,36 @@ export default class TestTable extends React.Component {
       $('#search-btn').click((btn) => {
          this.searchTickets();
       })
+      
+      $('#search-input').keydown((e) => {
+         if(e.keyCode == 13) {
+            this.searchTickets();
+         }
+      })
    }
     
     handleNextTicketsButton () {
-        this.socket.emit("table list", "next");
+       let addTicketsToTable = (tickets) => {
+          tickets.map((ticketItem, index) => {
+             this.state.testListArray.push(ticketItem);
+          });
+          this.setState(this.state.testListArray);
+       }
+       
+      $.ajax({
+         url: "/api/get-tickets-from",
+         data: {
+            from: this.state.testListArray[this.state.testListArray.length - 1].ticketNumber
+         },
+         success: function(result) {
+            console.log("Ticket list got! \n", result);
+            addTicketsToTable(result);
+         }
+      });
     }
     
     handleNewTicketsButton() {
-        this.socket.emit("table list", "previous");
+//        this.socket.emit("table list", "previous");
         
 //        this.setState((prevState))
     }

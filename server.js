@@ -120,6 +120,22 @@ app.get("/api/get-table-list", isLoggedIn, (req, res) => {
 //   res.json({message: "loaded"});
 })
 
+app.get("/api/get-tickets-from", isLoggedIn, (req, res) => {
+	console.log("User: ", req.user.local.username, " requseted for tickets from ", req.query);
+   
+   configDB.getTicketsFrom(Number(req.query.from), 20, (err, tickets) => {
+      if (err) {
+         console.warn("Error occured when find tickets", err);
+         res.json([]);
+         return false;
+      }
+      
+      console.log("Got ", tickets.length, " tickets from ", req.query.from);
+      res.json(tickets);
+   })
+//   res.json({message: "loaded"});
+})
+
 app.get("/api/search-tickets", isLoggedIn, (req, res) => {
 	console.log("User: ", req.user.local.username, " requseted for searching ", req.query);
    

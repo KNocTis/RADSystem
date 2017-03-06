@@ -4,16 +4,16 @@ const webpack = require('webpack');
 const path = require('path');
 
 //const debug = process.env.NODE_ENV !== "production";
-const debug = true;
+const debug = false;
 
-const itend = true;
+const itend = false;
 
 const entryFile = itend ? path.join(__dirname, 'app-it.js') : path.join(__dirname, 'app-client.js');
 const outputFile = itend ? path.join(__dirname, 'private', 'js') : path.join(__dirname, 'public', 'js');
 
 
 module.exports = {
-  devtool: debug ? 'inline-sourcemap' : null,
+  devtool: debug ? 'inline-sourcemap' : false,
   entry: entryFile,
 //  devServer: {
 //    inline: true,
@@ -42,16 +42,16 @@ module.exports = {
   },
 	plugins: debug ? [] : [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+      'process.env.NODE_ENV': JSON.stringify('production')
     }),
-    new webpack.optimize.DedupePlugin(),
+//    new webpack.optimize.DedupePlugin(),
 //    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      compress: { warnings: false },
-      mangle: true,
-      sourcemap: false,
-      beautify: false,
-      dead_code: true
+//      compress: { warnings: false },
+//      mangle: true,
+//      sourcemap: false,
+//      beautify: false,
+//      dead_code: true
     })
   ]
 };
