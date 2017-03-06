@@ -16,7 +16,7 @@ module.exports = {
       
    },
 
-   getLatestTickets: (from, done) => {
+   getTicketsFrom: (from, number, done) => {
       
    },
    
