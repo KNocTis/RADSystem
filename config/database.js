@@ -66,12 +66,16 @@ module.exports = {
                //If the ticket is cancelled within 2 hours
                if(ticket){
                   if (moment().subtract(2, "hours").isBefore(ticket.lastModifiedTime)){
-                     //Pull the ticket to the top of query, then return
-                     ticket.status = 0;
-                     ticket.save((err, updatedTicket) => {
-                        done(err, updatedTicket);
+                     console.log(ticket.status);
+                     if (ticket.status == 4 || ticket.status == 5 || ticket.status == 6) {
+                        //Pull the ticket to the top of query, then return
+                        ticket.status = 0;
+                        ticket.password = tvPW;
+                        ticket.save((err, updatedTicket) => {
+                           done(err, updatedTicket);
+                        });
                         return true
-                     })
+                     }
                   }
                }
 
