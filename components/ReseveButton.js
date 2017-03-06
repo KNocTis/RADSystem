@@ -18,12 +18,13 @@ import React from 'react';
 
 const buttonText = [
 	"Reserve",
-	"Reserving",
+	"Requesting",
 	"Cancel",
 	"Reserve again",
    "Cancel",
    "Reserve again",
-   "Cancelling"
+   "Cancelling",
+   "Update"
 ];
 
 const buttonClass = [
@@ -33,7 +34,8 @@ const buttonClass = [
    "btn btn-default",
    "btn btn-danger disabled",
    "btn btn-default",
-   "btn btn-danger disabled"
+   "btn btn-danger disabled",
+   "btn btn-default"
 ];
 
 export default class ReserveButton extends React.Component {

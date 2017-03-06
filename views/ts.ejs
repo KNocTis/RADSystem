@@ -6,6 +6,7 @@
       <title>TutorABC test support</title>
 
       <script src="/lib/jquery-3.1.1.min.js"></script>
+      <script src="/lib/bootstrap.min.js"></script>
 
       <!-- Latest compiled and minified CSS -->
       <link rel="stylesheet" href="/lib/bootstrap.min.css" crossorigin="anonymous">
@@ -51,6 +52,65 @@
 	<body>
 
 		<div id="main"></div>
+      
+      
+<!--      This is FINISH modal .   -->
+      <div class="modal fade" tabindex="-1" role="dialog" id="finish-modal">
+        <div class="modal-dialog modal-sm" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Finish the test</h4>
+            </div>
+            <div class="modal-body">
+               <button type="button" class="btn btn-success" id="finish-pass">Pass</button>
+               <button type="button" class="btn btn-danger" id="finish-fail">Fail</button>
+               <button type="button" class="btn btn-warning" id="finish-terminate">Terminate</button>
+             </div>
+           </div>
+        </div>
+      </div> 
+      
+<!--      This is NEW TICKET modal .   -->
+      <div class="modal fade" tabindex="-1" role="dialog" id="new-ticket-modal">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">New test ticket</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                   <div class="col-md-6">
+                     <label for="ctl-name" class="control-label">Consultant Name/email:</label>
+                     <input type="text" class="form-control" id="name-email">
+                   </div>
+                </div>
+                 <div class="row">
+                   <div class="col-md-6">
+                     <label for="tv-id" class="control-label">ID:</label>
+                     <input type="text" class="form-control col-lg-6" id="tv-id">
+                    </div>
+                   <div class="col-md-6">
+                     <label for="tv-password" class="control-label">Password:</label>
+                     <input type="text" class="form-control col-lg-6" id="tv-password">
+                    </div>
+                 </div>
+                <div class="row">
+                   <div class="col-md-6">
+                      <label for="test-issue" class="control-label">Issue:</label>
+                      <textarea placeholder="Describe issue" class="form-control" id="test-issue"></textarea>
+                   </div>
+                </div>               
+             </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" id="create-ticket">Create</button>
+            </div>             
+           </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div> <!-- /.modal -->
+<!--      This is END of NEW TICKET modal .   -->
 
 		<script src="js/bundle.js"></script>
         

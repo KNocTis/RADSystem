@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 let ticketSchema = mongoose.Schema({
    
-   ticketNumber: String,
+   ticketNumber: Number,
    id: String,
    password:String,
    lastModifiedTime: Date,
@@ -10,7 +10,10 @@ let ticketSchema = mongoose.Schema({
    status: Number,
    ctlName: String,
    description: String,
-   creator: String
+   creator: String,
+   ctlLocation: String,
+   issue: String,
+   email: String
    
 });
 
@@ -24,9 +27,11 @@ let ticketSchema = mongoose.Schema({
 // 1. ticketStatus ===> 0 ==> Waiting
 //        ===> 1 ==> Some one is on it
 //        ===> 2 ==> Failed to connect, waiting for feedback from consultant
-//        ===> 3 ==> Done
+//        ===> 3 ==> <---------- Reserved : formerly DONE---------->
 //        ===> 4 ==> Cancelled
 //        ===> 5 ==> Terminated by IT
 //        ===> 6 ==> Unexpectedly closed
+//        ===> 7 ==> Pass
+//        ===> 8 ==> Fail
 
 module.exports = mongoose.model('Ticket', ticketSchema);

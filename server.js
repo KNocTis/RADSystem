@@ -107,7 +107,7 @@ app.post("/signup", passport.authenticate('local-signup', {
 // API =========================API===========================================
 
 app.get("/api/get-table-list", isLoggedIn, (req, res) => {
-	console.log("User: ", req.user.username, " requseted for table list");
+	console.log("User: ", req.user.local.username, " requseted for table list");
    
    configDB.getTicketsList(20, "", (err, data) => {
       if (err) {
@@ -116,6 +116,21 @@ app.get("/api/get-table-list", isLoggedIn, (req, res) => {
       }
       
       res.json(data);
+   })
+//   res.json({message: "loaded"});
+})
+
+app.get("/api/search-tickets", isLoggedIn, (req, res) => {
+	console.log("User: ", req.user.local.username, " requseted for searching ", req.query);
+   
+   configDB.searchTickets(req.query.content, (err, tickets) => {
+      if (err) {
+         console.warn("Error occured when find tickets", err);
+         res.json([]);
+         return false;
+      }
+      
+      res.json(tickets);
    })
 //   res.json({message: "loaded"});
 })
@@ -131,7 +146,7 @@ app.post("/api/create-ticket", (req, res) => {
 //   console.log(req.body);
    
    if(req.body.tvID){
-      configDB.createNewTicketWithIDAndPw(req.body.tvID, req.body.tvPW, null, (err, ticket) => {
+      configDB.createNewTicketWithIDAndPw(req.body.tvID, req.body.tvPW, req.body.others, (err, ticket) => {
          broadcastWaitingStatus();
          
          io.emit('new-ticket-created', ticket);
@@ -189,17 +204,37 @@ app.post("/api/cancel-ticket", (req, res) => {
 })
 
 app.post("/api/finish-ticket", (req, res) => {
-	console.log("Finishing ticket: ", req.body.ticketNumber);
 //   console.log(req.body);
+   let handler = req.user.local.firstname + " " + req.user.local.lastname;
+
+   console.log("User ", handler, " is finishing ticket: ", req.body.ticketNumber, " will change to ", req.body.status);
    
    if(req.body){
-      configDB.finishTicket(req.body.ticketNumber, (err, ticket) => {
+      configDB.finishTicket(req.body.ticketNumber, req.body.status, handler, (err, ticket) => {
          if (err) {
             res.json(err);
             return false;
          }
          
          ticketHasBeenModified(ticket);
+      });
+   }
+
+})
+
+app.post("/api/update-ticket", (req, res) => {
+	console.log("Updating ticket: ", req.body.ticketNumber);
+//   console.log(req.body);
+   
+   if(req.body){
+      configDB.updateTicket(req.body, (err, ticket) => {
+         if (err) {
+            res.send(err);
+            return false;
+         }
+         
+         ticketHasBeenModified(ticket);
+         res.send('send');
       });
    }
 
@@ -220,7 +255,7 @@ app.post("/api/push-noti-for-ticket", (req, res) => {
 
 
 let ticketHasBeenModified = (ticket) => {
-   console.log("Socketio broadcast in channel ", ticket.ticketNumber, "for ticket", ticket);
+   console.log("Socketio broadcast in channel ", ticket.ticketNumber);
    io.emit(ticket.ticketNumber, ticket);
 }
 

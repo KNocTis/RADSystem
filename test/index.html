@@ -57,8 +57,10 @@
 } 
 
  .table-container {
+/*
 	 margin-left: 10%;
 	 max-width: 80%;
+*/
  }
 
  table {
@@ -108,7 +110,61 @@
 			  </div>
 			</nav>
 
-	
+      <div class="modal fade" tabindex="-1" role="dialog" id="finish-modal">
+        <div class="modal-dialog modal-sm" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Finish the test</h4>
+            </div>
+            <div class="modal-body">
+               <button type="button" class="btn btn-success" id="finish-pass">Pass</button>
+               <button type="button" class="btn btn-danger" id="finish-fail">Fail</button>
+               <button type="button" class="btn btn-warning" id="finish-terminate">Terminate</button>
+             </div>
+           </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div> <!-- /.modal -->
+      
+      <div class="modal fade" tabindex="-1" role="dialog" id="new-ticket-modal">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">New test ticket</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                   <div class="col-md-6">
+                     <label for="recipient-name" class="control-label">Consultant Name:</label>
+                     <input type="text" class="form-control" id="recipient-name">
+                   </div>
+                </div>
+                 <div class="row">
+                   <div class="col-md-6">
+                     <label for="message-text" class="control-label">ID:</label>
+                     <input type="text" class="form-control col-lg-6" id="message-text">
+                    </div>
+                   <div class="col-md-6">
+                     <label for="message-text" class="control-label">Password:</label>
+                     <input type="text" class="form-control col-lg-6" id="message-text">
+                    </div>
+                 </div>
+                <div class="row">
+                   <div class="col-md-6">
+                      <label for="recipient-name" class="control-label">Issue:</label>
+                      <textarea placeholder="Describe issue" class="form-control" id="recipient-name"></textarea>
+                   </div>
+                </div>               
+             </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary">Create</button>
+            </div>             
+           </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div> <!-- /.modal -->
+      
 		<div class="jumbotron text-center">
 			<form id="reserve-request text-center">
 				<div class="id-password">
@@ -120,6 +176,17 @@
 					 <label for="teamviewer-pw">Password</label>
 					 <input type="text" class="form-control text-center" id="teamviewer-pw" placeholder="Password">
 				  </div>
+               
+                 <div class="form-group">
+                   <label htmlFor="teamviewer-pw">Issue</label>
+                   <select class="form-control text-center">
+                        <option value="ss">asdasdf</option>
+                      <option value="ss">asdasdf</option>
+                      <option value="ss">asdasdf</option>
+                      <option value="ss">asdasdf</option>
+                      <option value="ss">asdasdf</option>
+                    </select>
+                 </div>               
 				</div>
 
 			  <div class="form-group">
@@ -157,7 +224,29 @@
 <table class="table table-borderless"><thead><tr><th>#</th><th>Time</th><th>ID</th><th>Password</th><th>Status</th><th>Handler</th></tr></thead><tbody><tr><th scope="row">1</th><td>2017-02-28T12:11:41.881Z</td><td>123</td><td>123</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">2</th><td>2017-02-28T12:13:30.605Z</td><td>1233534534</td><td>I am so happy</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">3</th><td>2017-02-28T15:45:30.445Z</td><td></td><td></td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">4</th><td>2017-02-28T15:49:49.556Z</td><td>123</td><td>1231231</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">5</th><td>2017-03-01T05:54:44.531Z</td><td>123</td><td>1231231</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">6</th><td>2017-03-01T08:24:06.912Z</td><td>123</td><td>3333</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">7</th><td>2017-03-01T08:25:55.381Z</td><td>123131</td><td>tdsa</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">8</th><td>2017-03-01T08:26:19.448Z</td><td>123123</td><td>ssss</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">9</th><td>2017-03-01T08:40:11.474Z</td><td>12311</td><td>wwe33</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">10</th><td>2017-03-01T08:45:23.393Z</td><td>12311</td><td>3344</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">11</th><td>2017-03-01T08:46:37.011Z</td><td>12333</td><td>44</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">12</th><td>2017-03-01T08:53:02.256Z</td><td>232</td><td>111</td><td><button class="btn btn-xs btn-warning disabled" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">13</th><td>2017-03-01T09:35:07.662Z</td><td>12322</td><td>223ew</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">14</th><td>2017-03-01T09:35:15.609Z</td><td>12322</td><td>223ew</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr></tbody></table>
 		</div>
       
-<div class="jumbotron"><div class="table-container"><ul class="nav nav-pills new-tabs hide" role="tablist"><li role="presentation"><a role="button"><!-- react-text: 16 -->New <!-- /react-text --><span class="badge">3</span></a></li></ul><table class="table table-borderless"><thead><tr><th>#</th><th>Time</th><th>ID</th><th>Password</th><th>Status</th><th>Handler</th></tr></thead><tbody><tr><th scope="row">1</th><td>2017-02-28T12:11:41.881Z</td><td>123</td><td>123</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">2</th><td>2017-02-28T12:13:30.605Z</td><td>1233534534</td><td>I am so happy</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">3</th><td>2017-02-28T15:45:30.445Z</td><td></td><td></td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">4</th><td>2017-02-28T15:49:49.556Z</td><td>123</td><td>1231231</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">5</th><td>2017-03-01T05:54:44.531Z</td><td>123</td><td>1231231</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">6</th><td>2017-03-01T08:24:06.912Z</td><td>123</td><td>3333</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">7</th><td>2017-03-01T08:25:55.381Z</td><td>123131</td><td>tdsa</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">8</th><td>2017-03-01T08:26:19.448Z</td><td>123123</td><td>ssss</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">9</th><td>2017-03-01T08:40:11.474Z</td><td>12311</td><td>wwe33</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">10</th><td>2017-03-01T08:45:23.393Z</td><td>12311</td><td>3344</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">11</th><td>2017-03-01T08:46:37.011Z</td><td>12333</td><td>44</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">12</th><td>2017-03-01T08:53:02.256Z</td><td>232</td><td>111</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">13</th><td>2017-03-01T09:35:07.662Z</td><td>12322</td><td>223ew</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">14</th><td>2017-03-01T09:35:15.609Z</td><td>12322</td><td>223ew</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr></tbody></table><p class="text-center"><a><span class="glyphicon glyphicon-menu-down"></span></a></p></div></div>
+<div class="jumbotron">
+   <div class="row table-nav">
+      <div class="col-md-10 col-md-offset-1 form-inline">
+        <div class="col-md-3">
+          <button class="btn btn-xx"><i class="fa fa-plus" aria-hidden="true"></i></button>
+        </div><!-- /.col-lg-6 -->
+        <div class="col-md-3 col-md-offset-6">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search for...">
+            <span class="input-group-btn">
+              <button class="btn btn-xx" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </span>
+          </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+      </div>
+   </div>
+   <br>
+   <div class="row">
+      <div class="table-container col-md-10 col-md-offset-1"><ul class="nav nav-pills new-tabs hide" role="tablist"><li role="presentation"><a role="button"><!-- react-text: 16 -->New <!-- /react-text --><span class="badge">3</span></a></li></ul><table class="table table-borderless"><thead><tr><th>#</th><th>Time</th><th>ID</th><th>Password</th><th>Status</th><th>Handler</th></tr></thead><tbody><tr><th scope="row">1</th><td>2017-02-28T12:11:41.881Z</td><td>123</td><td>123</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">2</th><td>2017-02-28T12:13:30.605Z</td><td>1233534534</td><td>I am so happy</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">3</th><td>2017-02-28T15:45:30.445Z</td><td></td><td></td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">4</th><td>2017-02-28T15:49:49.556Z</td><td>123</td><td>1231231</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">5</th><td>2017-03-01T05:54:44.531Z</td><td>123</td><td>1231231</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">6</th><td>2017-03-01T08:24:06.912Z</td><td>123</td><td>3333</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">7</th><td>2017-03-01T08:25:55.381Z</td><td>123131</td><td>tdsa</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">8</th><td>2017-03-01T08:26:19.448Z</td><td>123123</td><td>ssss</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">9</th><td>2017-03-01T08:40:11.474Z</td><td>12311</td><td>wwe33</td><td><button class="btn btn-xs btn-success" type="button">On it</button></td><td></td></tr><tr><th scope="row">10</th><td>2017-03-01T08:45:23.393Z</td><td>12311</td><td>3344</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">11</th><td>2017-03-01T08:46:37.011Z</td><td>12333</td><td>44</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">12</th><td>2017-03-01T08:53:02.256Z</td><td>232</td><td>111</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">13</th><td>2017-03-01T09:35:07.662Z</td><td>12322</td><td>223ew</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr><tr><th scope="row">14</th><td>2017-03-01T09:35:15.609Z</td><td>12322</td><td>223ew</td><td><button class="btn btn-xs btn-warning disable" type="button">Cancelled</button></td><td></td></tr></tbody></table><p class="text-center"><a><span class="glyphicon glyphicon-menu-down"></span></a></p></div>
+   </div>
+
+      
+      </div>
       
 			<div class="jumbotron text-center">
 				<p>1. Click <Link className="" to="/test">here</Link> to downlaod TeamViewer into your computer.</p>

@@ -21,11 +21,13 @@ const alertText = [
     "Sorry, the test is unexpectly terminated. Please request test again if need."
 ];
 
-const hexColor = {
-   red: "#e73e3a", //银朱
-   green: '#e4cf8e', //甘草黄
-   yellow: '#90caaf' //三绿
-}
+const optionsOfIssues = [
+   "Others",
+    "I need test for new consultant",
+    "My account needs to be reactivated",
+    "I counldn't join the session",
+   "I can't hear anything or otehrs cannot hear me"
+];
 
 let socket;
 let ticket;
@@ -58,7 +60,8 @@ export default class Reserve extends React.Component {
 	// 4 ===> Someone took the test, and we will be connnected soon
 	// 5 ===> Ticket is canncelled
    // 6 ===> Ticket is cancelling
-
+   // 7 ===> Fails to connect, ticket needs to be updated
+   
 	// Alert state 
 	// 0 ===> No alert
 	// 1 ===> unable to connect
@@ -66,19 +69,32 @@ export default class Reserve extends React.Component {
 	// 3 ===> ticket done
     
 	validTeamviewerDetail(){
-      console.log("length of tvID: ", document.getElementById('teamviewer-id').value.length);
+//      console.log("length of tvID: ", document.getElementById('teamviewer-id').value.length);
+      
       if (document.getElementById('teamviewer-id').value.length >= 9 && document.getElementById('teamviewer-id').value.length <= 10){
-         return true;
+         if (document.getElementById('teamviewer-pw').value.length > 3 && document.getElementById('teamviewer-pw').value.length < 18) {
+            if (document.getElementById('name-email').value.length > 0)
+               return true;
+         }
       }
       
       return false;
+   }
+   
+   validateEmail(email) {
+      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+   }
+   
+   optionElementForIssue(issueItem, index) {
+      return <option value={issueItem} key={index}>{issueItem}</option>
    }
 	
    reserveButtonHasBeenClicked(e) {
 
       switch(this.state.reserved) {
 
-         case 0: // ======> Submit test request
+         case 0: // ===========================================================> Submit test request
             if(!this.validTeamviewerDetail()) {
                console.warn("Invalid teamviewer ID and password!");
                //Pop up warning
@@ -86,9 +102,23 @@ export default class Reserve extends React.Component {
                break;
             }
             
-             let teamViewerDetail = {
-                 'id': document.getElementById('teamviewer-id').value,
-                 'password': document.getElementById('teamviewer-pw').value
+            //Confirmation before request
+            ////////////////////////
+            let confirmation = confirm("By click \"ok\" to allow us remotely control your computer");
+            if (confirmation == false) {
+               console.warn("User doenst allow to control");
+               return false;
+            }
+               
+            
+             
+             let others = {
+                issue: document.getElementById("issue").value
+             };
+             if (this.validateEmail(document.getElementById('name-email').value)){
+                others.email = document.getElementById('name-email').value;
+             } else {
+                others.ctlName = document.getElementById('name-email').value;
              }
              
              let ticketHasBeenReserved = this.ticketHasBeenReserved;
@@ -106,7 +136,8 @@ export default class Reserve extends React.Component {
                url: "/api/create-ticket",
                data: {
                   tvID: document.getElementById('teamviewer-id').value,
-                  tvPW: document.getElementById('teamviewer-pw').value
+                  tvPW: document.getElementById('teamviewer-pw').value,
+                  others: others
                },
                success: function( result ) {
                   ticket = result;
@@ -117,7 +148,7 @@ export default class Reserve extends React.Component {
 
              break;
 
-         case 2: // ==========> Cancel test
+         case 2: // ======================================================================> Cancel test
 //             socket.emit(this.channel, 'cancel');
             let ticketHasBeenRCancelled = this.ticketHasBeenRCancelled;
             
@@ -139,6 +170,24 @@ export default class Reserve extends React.Component {
             });
             
             break;
+         case 7: // ======================================================================> update ticket
+            this.setState((prevState) => ({
+               reserved: 1
+            }));
+            
+            $.ajax({
+               type: "POST",
+               url: "/api/update-ticket",
+               data: {
+                  ticketNumber: ticket.ticketNumber,
+                  id: document.getElementById('teamviewer-id').value,
+                  passowrd: document.getElementById('teamviewer-pw').value
+               },
+               success: function( err ) {
+                  console.log("Failed to update ticket");
+//                  ticketHasBeenRCancelled();
+               }
+            });            
       }
 
    }
@@ -168,16 +217,18 @@ export default class Reserve extends React.Component {
             return true;
          }
          
+         //If IT fails to connect
+         //pop up nitification
          if (resultTicket.notification) {
            // Let's check if the browser supports notifications
            if (!("Notification" in window)) {
-             alert("This browser does not support desktop notification");
+             conosle.warn("This browser does not support desktop notification");
            }
 
            // Let's check whether notification permissions have already been granted
            else if (Notification.permission === "granted") {
              // If it's okay let's create a notification
-             var notification = new Notification("Hi there!");
+             var notification = new Notification(resultTicket.notification);
            }
 
            // Otherwise, we need to ask the user for permission
@@ -185,11 +236,16 @@ export default class Reserve extends React.Component {
              Notification.requestPermission(function (permission) {
                // If the user accepts, let's create a notification
                if (permission === "granted") {
-                 var notification = new Notification("Hi there!");
+                 var notification = new Notification(resultTicket.notification);
                }
              });
            }
 
+            this.setState((prevState) => ({
+               reserved: 7
+            }))
+            
+            return true;
            // At last, if the user has denied notifications, and you 
            // want to be respectful there is no need to bother them any more.
          }
@@ -206,10 +262,12 @@ export default class Reserve extends React.Component {
             case 2: //============> Failed to connect, waiting for feedback from cnosultant
                //Pop alert
                this.setState((prevState) => ({
-                  alert: 1
+                  reserved: 7
                }))
                break;
             case 3: //====================> Done
+            case 7: //====================> Pass
+            case 8: //====================> Fail
                this.setState((prevState) => ({
                   reserved: 3,
                   alert: 0
@@ -261,6 +319,16 @@ export default class Reserve extends React.Component {
                  <div className="form-group">
                    <label htmlFor="teamviewer-pw">Password</label>
                    <input type="text" className="form-control text-center" id="teamviewer-pw" placeholder="Password"/>
+                 </div>
+                 <div className="form-group">
+                   <label htmlFor="name-email">Name/Email</label>
+                   <input type="text" className="form-control text-center" id="name-email" placeholder="Name or Email"/>
+                 </div>
+                 <div className="form-group">
+                   <label htmlFor="teamviewer-pw">Issue</label>
+                   <select className="form-control" id="issue">
+                     {optionsOfIssues.map(this.optionElementForIssue)}
+                    </select>
                  </div>
                </div>
               <StatusPrompt reservationStatus={this.state.reserved} waitingCount={this.state.waitingCount}/>

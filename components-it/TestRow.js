@@ -2,6 +2,7 @@
 
 import React from 'react';
 import io from 'socket.io-client';
+import moment from "moment";
 
 // Properties//
 // 1. ticketStatus ===> 0 ==> No one on it
@@ -33,7 +34,11 @@ const statusButtonClass = [
    "btn btn-xs btn-danger",
    "btn btn-xs btn-warning",
    "btn btn-xs btn-default disabled",
-   "btn btn-xs btn-warning disabled"
+   "btn btn-xs btn-warning disabled",
+   "btn btn-xs btn-warning disabled",
+   "btn btn-xs btn-warning disabled",
+   "btn btn-xs btn-success disabled",
+   "btn btn-xs btn-danger disabled"
 ];
 
 const statusButtonText = [
@@ -41,7 +46,11 @@ const statusButtonText = [
    "Done",
    "Resume",
    "=Done=",
-   "Cancelled"
+   "Cancelled",
+   "Terminated",
+   "Cancelled",
+   "=Pass=",
+   "=Fail="
 ]
 
 
@@ -49,42 +58,13 @@ export default class TestRow extends React.Component {
    constructor (props) {
       super(props);
 
-//      socket = io();
-
-//      this.state = {
-//         ticketRequestedTime: this.props.ticket.lastModifiedTime,
-//         id: this.props.ticket.id,
-//         password: this.props.ticket.password,
-//         handler: this.props.ticket.handler,
-//         ticketStatus: this.props.ticket.status
-//      }
-
       this.handleProcessTestButton = this.handleProcessTestButton.bind(this);
       this.alert = this.alert.bind(this);
 //      this.ticketHasBeenTakenOVer = this.ticketHasBeenTakenOVer.bind(this);
    }
-
-    // "btn btn-success btn-xs disabled"
     
     componentDidMount() {
-       
-//       console.log("Ticket ", this.props.ticket.ticketNumber, " did mount");
-       
-//        if (this.props.ticket) {
-//            socket.on(this.props.ticket.ticketNumber, msg => {
-//               console.log("Socketio broadcast messgae received");
-//               if (!msg)
-//                  return false;
-//               
-//               this.setState((prevState) => ({
-//                  ticketRequestedTime: msg.lastModifiedTime ? msg.lastModifiedTime : prevState.ticketRequestedTime,
-//                  id: msg.id ? msg.id : prevState.id,
-//                  password: msg.password ? msg.password : prevState.password,
-//                  handler: msg.handler ? msg.handler : prevState.handler,
-//                  ticketStatus: msg.status ? msg.status : prevState.ticketStatus
-//               }))
-//            });
-//        }
+
     }
    
    componentWillUnmount() {
@@ -111,16 +91,36 @@ export default class TestRow extends React.Component {
             });
             break;
          case 1: // ============================>  Someone is on it
-            $.ajax({
-               type: "POST",
-               url: "/api/finish-ticket",
-               data: {
-                  ticketNumber: this.props.ticket.ticketNumber
-               },
-               success: function( result ) {
-                  console.log("Finish a ticket, result ==> ", result);
-               }
+            $('#finish-modal').modal('show');
+            
+            let ticketNumber = this.props.ticket.ticketNumber;
+            let sendFinishPost = (type) => {
+               $.ajax({
+                  type: "POST",
+                  url: "/api/finish-ticket",
+                  data: {
+                     ticketNumber: ticketNumber,
+                     status: type
+                  },
+                  success: function( result ) {
+                     console.log("Finish a ticket, result ==> ", result);
+                  }
+               });
+            }
+            
+            $('#finish-pass').click(() => {
+               sendFinishPost(7);
+               $('#finish-modal').modal('hide');
             });
+            $('#finish-fail').click(() => {
+               sendFinishPost(8);
+               $('#finish-modal').modal('hide');
+            });
+            $('#finish-terminate').click(() => {
+               sendFinishPost(5);
+               $('#finish-modal').modal('hide');
+            });
+
             break;
          case 3:
                
@@ -143,6 +143,10 @@ export default class TestRow extends React.Component {
       return "hide";
    }
    
+   nameOrEmail() {
+      return this.props.ticket.ctlName ? this.props.ticket.ctlName : this.props.ticket.email;
+   }
+   
    alert() {
       $.ajax({
          type: "POST",
@@ -161,9 +165,11 @@ export default class TestRow extends React.Component {
         return (
             <tr>
                 <th scope="row">{this.props.ticket.ticketNumber}</th>
-                <td>{this.props.ticket.lastModifiedTime}</td>
+                <td>{moment(this.props.ticket.lastModifiedTime).format('MMMM Do, HH:mm:ss')}</td>
                 <td>{this.props.ticket.id}</td>
                 <td>{this.props.ticket.password}</td>
+                 <td>{this.nameOrEmail()}</td>
+                 <td>{this.props.ticket.issue}</td>
                 <td><button className={statusButtonClass[this.props.ticket.status]} type="button" onClick={this.handleProcessTestButton}>{statusButtonText[this.props.ticket.status]}</button><button className={"btn btn-default btn-xs " + this.hideAlertButton()} type="button" onClick={this.alert}>Alert</button></td>
                 <td>{this.props.ticket.handler}</td>
             </tr>

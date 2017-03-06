@@ -32,6 +32,14 @@ module.exports = {
       });
    },
    
+   searchTickets: (content, done) => {
+      let re = new RegExp(content, 'i');
+
+      Ticket.find().or([{ 'ctlName': { $regex: re }}, { 'email': { $regex: re }}]).sort({'status': 1, 'ticketNumber': -1}).exec((err, tickets) => {
+          done(err, tickets);
+      });
+   },
+   
    //=====================================
    //==============Submit==================
    //=====================================
@@ -63,7 +71,12 @@ module.exports = {
 
                ///=================================
                //If there is no ticket with same ID
-
+               let otherInfo;
+               if (others) {
+                  otherInfo = others;
+               } else {
+                  otherInfo = {};
+               }
                //Create a new one
                let newTicket = new Ticket({
 
@@ -72,9 +85,11 @@ module.exports = {
                   lastModifiedTime:new Date,
                   handler: "",
                   status: 0,
-                  ctlName: others ? others.ctlName : "",
-                  description: others ? others.description : "",
-                  creator: others ? others.creator : ""
+                  ctlName: otherInfo.ctlName ? otherInfo.ctlName : "",
+                  description: otherInfo.description ? otherInfo.description : "",
+                  creator: otherInfo.creator ? otherInfo.creator : "",
+                  email: otherInfo.email ? otherInfo.email : "",
+                  issue: otherInfo.issue ? otherInfo.issue : ""
 
                });
 
@@ -105,30 +120,31 @@ module.exports = {
    
    takeOverTicket: (ticketNo, handler, done) => {
       
+//      console.log("takeOverTicket is called and 2 props: ", ticketNo, handler);
       //async
       process.nextTick(() => {
          //
          Ticket.findOne(
             {"ticketNumber": ticketNo},
-            (err, ticket) => {
+            (err, theTicket) => {
                if(err) {
                   console.log("Error occured when finding a ticket", err);
                   return false;
                }
-               
                ///=================================
                //If the ticket NOT found
-               if (!ticket) {
-                  done("Ticket ", ticketNo, " not found");
+               if (!theTicket) {
+                  done("Ticket " + ticketNo + " not found");
                }
                
+//               console.log("takeOverTicket ", theTicket);
                ///=================================
                //If the ticket has NOT been taken over yet
-               if (ticket.status == 0 || ticket.status == 2) {
-                  ticket.status = 1;
-                  ticket.handler = handler;
+               if (theTicket.status == 0 || theTicket.status == 2) {
+                  theTicket.status = 1;
+                  theTicket.handler = handler;
                   
-                  ticket.save((err, updatedTicket) => {
+                  theTicket.save((err, updatedTicket) => {
                      if(err) {
                         console.warn("Error occured when saving a ticket", err);
                         return false;
@@ -150,7 +166,7 @@ module.exports = {
 
    },
    
-   finishTicket: (ticketNo, done) => {
+   finishTicket: (ticketNo, status, handler, done) => {
       
       //async
       process.nextTick(() => {
@@ -172,7 +188,12 @@ module.exports = {
                ///=================================
                //The can be done only when someone is on it
                if (ticket.status == 1) {
-                  ticket.status = 3;
+                  if (ticket.handler !== handler){
+                     console.warn("Ticket can't be done by handler other than ", ticket.handler);
+                     done("Ticket can't be done by another handler");
+                  }
+                  
+                  ticket.status = status;
                   
                   ticket.save((err, updatedTicket) => {
                      if(err) {
@@ -194,20 +215,6 @@ module.exports = {
          );
       }); 
       
-      Ticket.findOneAndUpdate(
-         {"ticketNumber": ticketNo},
-         {"status": 3},
-         {new: true},
-         (err, result) => {
-            if(err) {
-               console.log("Error occured when finishing a ticket", err);
-               return false;
-            }
-            
-            console.log("Ticket ", result.ticketNumber, "finished by ", result.handler);
-            done(err, result);
-         }
-      );
    },
    
    
@@ -251,6 +258,42 @@ module.exports = {
          );
       });
 
+   },
+   
+   updateTicket: (ticket, done) => {
+      
+      //async
+      process.nextTick(() => {
+         //Find the ticket first
+         Ticket.findOne(
+            {"ticketNumber": ticket.ticketNumber},
+            (err, oldTicket) => {
+               if(err) {
+                  console.log("Error occured when finding a ticket", err);
+                  return false;
+               }
+
+               //Ticket can be updated ONLY when ticket status == 1 2 3
+               if (oldTicket.status == 0 || oldTicket.status == 1 || oldTicket.status == 2) {
+                  
+                  if (ticket.id)
+                     oldTicket.id = ticket.id;
+                  if (ticket.passowrd)
+                     oldTicket.password = ticket.passowrd;
+                  
+                  
+                  oldTicket.save((err, updatedTicket) => {
+                     done(err, updatedTicket);
+                     return true;
+                  })
+               } else {
+                  console.log("Ticket ", ticket.ticketNumber, "can't be updated, since it's already cancelled or done")
+               }
+
+            }
+         );
+      });
+      
    }
 }
 

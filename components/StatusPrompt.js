@@ -10,7 +10,8 @@ const waitingWords = [
    "Test is finished", // ========> Test done
    "One of IT took the test, and you will be connected soon.",  // ======> IT took the test and is connnecting with Teamviewer
    "Test is cancelled",  // ==========> Test cancelled by Consultant
-   "Canceling the test..." // =============> Cancellation request is sending to server
+   "Canceling the test...", // =============> Cancellation request is sending to server
+   "Oops, IT fails to connect to your computer. Please make sure Teamviewer is running and update detail." // =============> 
 ];
 
 
@@ -29,6 +30,9 @@ export default class StatusPrompt extends React.Component {
    sizeOfWaitingWords(){
       if (this.props.reservationStatus == 2)
          return "12px";
+      
+      if (this.props.reservationStatus == 7) 
+         return "20px";
       
       return "16px";
    }
