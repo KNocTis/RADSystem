@@ -51,6 +51,6 @@ node_modules/*
 
 babel_cache/*
 
-Public/lib/*
+#Public/lib/*
 
-Public/fonts/*
+#Public/fonts/*
