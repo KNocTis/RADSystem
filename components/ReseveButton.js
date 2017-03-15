@@ -17,12 +17,12 @@ import React from 'react';
 
 
 const buttonText = [
-	"Reserve",
+	"Submit",
 	"Requesting",
 	"Cancel",
 	"Reserve again",
    "Cancel",
-   "Reserve again",
+   "Submit again",
    "Cancelling",
    "Update"
 ];
@@ -30,7 +30,7 @@ const buttonText = [
 const buttonClass = [
 	"btn btn-default",
 	"btn btn-default disabled",
-	"btn btn-danger",
+	"btn btn-default",
    "btn btn-default",
    "btn btn-danger disabled",
    "btn btn-default",

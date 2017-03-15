@@ -14,32 +14,16 @@
       <script src="../public/lib/bootstrap.min.js"></script>
       
       <script type="text/javascript">
-         window.onbeforeunload = function(e) {
-            $.ajax({
-               url: "http://localhost:8085/api/get-table-list",
-               data: {
+         $(document).ready(() => {
+          if (("Notification" in window)) {
+               Notification.requestPermission(function (permission) {
+                 if (permission === "granted") {
+                   console.log("Notification grant")
+                 }
+               });
+           }
 
-               },
-               success: function(result) {
-
-               }
-            });
-         };
-         
-         window.onunload = function(e) {
-            console.log("spsdfs445t3534534534p");
-            
-            $.ajax({
-               url: "http://localhost:8085/api/get-table-list",
-               data: {
-
-               },
-               success: function(result) {
-
-               }
-            });
-            
-         }
+         })
       </script>      
       
 		 <style>
@@ -190,7 +174,7 @@
 				</div>
 
 			  <div class="form-group">
-              <i class="fa fa-spinner fa-pulse fa-5x fa-fw" style="color:#e4cf8e;"></i>
+              <i class="fa fa-spinner fa-pulse fa-5x fa-fw" style="color:#e0b341;"></i>
 <span class="sr-only">Loading...</span>
 				 <p class="help-block"  style="font-size:16px;">Waiting words</p>
 			  </div>
@@ -198,7 +182,17 @@
 			  <div class="checkbox">
 				 <button type="submit" class="btn btn-danger btn-lg">Cancel</button>
 			  </div>
-
+        <h6>
+          (*) TeamViewer is a program that allows us to remotely control your computer.<br>
+          You will be able to see everything that we do while we are in control,<br>
+          and you will be able to terminate the control by closing the program.<br>
+          TeamViewer Official Site address : https://www.teamviewer.com<br>
+        </h6>
+           <style>
+             .small-description {
+               font-size: 12px;
+             }
+           </style>
                 
 			</form>
 		</div>

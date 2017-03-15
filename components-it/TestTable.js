@@ -216,7 +216,7 @@ export default class TestTable extends React.Component {
                   </div>
                   <div className="col-md-3 col-md-offset-6">
                      <div className="input-group">
-                        <input type="text" className="form-control" placeholder="Search for..." id="search-input"/>
+                        <input type="text" className="form-control" placeholder="Search for name/email" id="search-input"/>
                         <span className="input-group-btn">
                            <button className="btn btn-xx" type="button" id="search-btn"><i className="fa fa-search" aria-hidden="true"></i></button>
                         </span>

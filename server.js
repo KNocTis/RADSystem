@@ -279,7 +279,8 @@ let ticketHasBeenModified = (ticket) => {
 let broadcastWaitingStatus = () => {
    
    configDB.getWaitingTickets((err, tickets) => {
-      let broadcastForTicket = (ticket, index) => {      
+      let broadcastForTicket = (ticket, index) => {
+//        console.log("Broadcas waiting count for ticekt ", ticket.ticketNumber, "Waiting index: ", index);
          io.emit(ticket.ticketNumber, {waitingCount: index});
       }
 

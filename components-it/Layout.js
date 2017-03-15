@@ -12,9 +12,9 @@ export default class Layout extends React.Component {
 	render () {
 		return (
 			<div className="app-container">
-			  <header>
+			  <div className="header">
 				 <NavBar list={navItems}/>
-			  </header>
+			  </div>
 			  <div className="jumbotron">{this.props.children}</div>
 			  <footer>
 				 <p className="text-center">

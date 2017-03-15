@@ -22,11 +22,15 @@ const alertText = [
 ];
 
 const optionsOfIssues = [
-   "Others",
-    "I need test for new consultant",
-    "My account needs to be reactivated",
-    "I counldn't join the session",
-   "I can't hear anything or otehrs cannot hear me"
+  "Others",
+  "I am a new consultant",
+  "I was switched out from session",
+  "I can neither hear nor speak with my headset",
+  "My webcam does not work in session",
+  "I moved to another location",
+  "I want to resume teaching from my long leave",
+  "I have trouble entering the session",
+  "我是奥数顾问"
 ];
 
 let socket;
@@ -98,7 +102,7 @@ export default class Reserve extends React.Component {
             if(!this.validTeamviewerDetail()) {
                console.warn("Invalid teamviewer ID and password!");
                //Pop up warning
-               alert("The ID and password you filled in may not be right, please check it again before submit, thanks.");
+               alert("The ID and Password you entered is not correct, please double check and submit again.");
                break;
             }
             
@@ -203,11 +207,19 @@ export default class Reserve extends React.Component {
         reserved: 2
       }))
       
+      if (("Notification" in window)) {
+        Notification.requestPermission(function (permission) {
+          if (permission === "granted") {
+            console.log("Notification grant");
+          }
+        });
+      }
+      
       socket.on(ticket.ticketNumber, resultTicket => {
          
          console.log("Socketio broadcast messgae received", resultTicket);
          
-         if (resultTicket.waitingCount) {
+         if (resultTicket.waitingCount != undefined) {
             
             //handle
             this.setState((prevState) => ({
@@ -218,17 +230,18 @@ export default class Reserve extends React.Component {
          }
          
          //If IT fails to connect
-         //pop up nitification
+         //pop up notification
          if (resultTicket.notification) {
            // Let's check if the browser supports notifications
            if (!("Notification" in window)) {
              conosle.warn("This browser does not support desktop notification");
+             alert("Oops! We failed to connect to your computer");
            }
 
            // Let's check whether notification permissions have already been granted
            else if (Notification.permission === "granted") {
              // If it's okay let's create a notification
-             var notification = new Notification(resultTicket.notification);
+             var notification = new Notification("Oops! We failed to connect to your computer");
            }
 
            // Otherwise, we need to ask the user for permission
@@ -236,9 +249,15 @@ export default class Reserve extends React.Component {
              Notification.requestPermission(function (permission) {
                // If the user accepts, let's create a notification
                if (permission === "granted") {
-                 var notification = new Notification(resultTicket.notification);
+                 var notification = new Notification("Oops! We failed to connect to your computer");
+               } else {
+                 alert("Oops! We failed to connect to your computer");
                }
              });
+           }
+           
+           else if (Notification.permission === "denied") {
+             alert("Oops! We failed to connect to your computer");
            }
 
             this.setState((prevState) => ({
