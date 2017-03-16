@@ -29,7 +29,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, "views"));
 
 // define the folder that will be used for static assets
-app.use(Express.static(path.join(__dirname, 'public')));
+app.use('/testportal', Express.static(path.join(__dirname, 'public')));
 app.use('/ts', Express.static(path.join(__dirname, 'private')));
 
 app.use(morgan('dev')); 
@@ -54,12 +54,7 @@ mongoose.connect(configDB.url); // connect to our database
 //require('./config/passport')(passport); // pass passport for configuration
 require('./config/passport.js')(passport);
 
-app.get('/ittest',(req, res) => {
-	
-	app.render('consultant');
-});
-
-app.get('/',(req, res) => {
+app.get('/testportal',(req, res) => {
 	
 //	let markup = <NavBar/>;
 		 
@@ -70,7 +65,7 @@ let isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated())
         return next();
 
-    res.redirect('/login');
+    res.redirect('/ts/login');
 }
 
 app.get('/ts', isLoggedIn, (req, res) => {
@@ -81,24 +76,24 @@ app.get('/ts', isLoggedIn, (req, res) => {
 });
 
 
-app.get('/login', (req, res) => {
+app.get('/ts/login', (req, res) => {
 	res.render('login');
 });
 
-app.get('/signup', (req, res) => {
+app.get('/ts/signup', (req, res) => {
 	res.render('signup');
 });
 
-app.post("/login", passport.authenticate('local-login', {
+app.post("/ts/login", passport.authenticate('local-login', {
 	successRedirect: '/ts',
-	failureRedirect: '/login',
+	failureRedirect: '/ts/login',
 	failureFlash: false
 	})
 );
 
-app.post("/signup", passport.authenticate('local-signup', {
-	successRedirect: '/login',
-	failureRedirect: '/signup',
+app.post("/ts/signup", passport.authenticate('local-signup', {
+	successRedirect: '/ts/login',
+	failureRedirect: '/ts/signup',
 	failureFlash: false
 	})
 );
@@ -173,7 +168,7 @@ app.post("/api/create-ticket", (req, res) => {
 
 })
 
-app.post("/api/takeover-ticket", (req, res) => {
+app.post("/api/takeover-ticket", isLoggedIn,(req, res) => {
 //	console.log("User: ", req.user.local.username, "request to take over the ticket", req.body.ticketNo);
 //   console.log(req.body);
    
@@ -219,7 +214,7 @@ app.post("/api/cancel-ticket", (req, res) => {
 
 })
 
-app.post("/api/finish-ticket", (req, res) => {
+app.post("/api/finish-ticket", isLoggedIn, (req, res) => {
 //   console.log(req.body);
    let handler = req.user.local.firstname + " " + req.user.local.lastname;
 
@@ -238,7 +233,7 @@ app.post("/api/finish-ticket", (req, res) => {
 
 })
 
-app.post("/api/update-ticket", (req, res) => {
+app.post("/api/update-ticket", isLoggedIn, (req, res) => {
 	console.log("Updating ticket: ", req.body.ticketNumber);
 //   console.log(req.body);
    

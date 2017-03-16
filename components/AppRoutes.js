@@ -9,9 +9,9 @@ export default class AppRoutes extends React.Component {
 	render () {
 		return (
 			<Router history={browserHistory}>
-				<Route path="/" component={Layout}>
+				<Route path="testportal" component={Layout}>
 					<IndexRoute component={ReserveIndex}></IndexRoute>
-               <Route path="/reserve" component={ReserveIndex}></Route>
+               <Route path="reserve" component={ReserveIndex}></Route>
 				</Route>
 			</Router>
 		);

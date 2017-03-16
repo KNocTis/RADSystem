@@ -4,17 +4,17 @@ import React from 'react';
 import { Link } from 'react-router';
 
 const imgSrcForMac = {
-  teamViewer: "/imgsrc/MacTeamviewer.png",
-  issueSelection: "/imgsrc/MacIssueSelection.png",
-  notification: "/imgsrc/MacNotification.png",
-  idPwCorrection: "/imgsrc/MacAlert.png"
+  teamViewer: "imgsrc/MacTeamviewer.png",
+  issueSelection: "imgsrc/MacIssueSelection.png",
+  notification: "imgsrc/MacNotification.png",
+  idPwCorrection: "imgsrc/MacAlert.png"
 }
 
 const imgSrcForWin = {
-  teamViewer: "/imgsrc/WinTeamviewer.jpg",
-  issueSelection: "/imgsrc/MacIssueSelection.png",
-  notification: "/imgsrc/MacNotification.png",
-  idPwCorrection: "/imgsrc/MacAlert.png"
+  teamViewer: "imgsrc/WinTeamviewer.jpg",
+  issueSelection: "imgsrc/MacIssueSelection.png",
+  notification: "imgsrc/MacNotification.png",
+  idPwCorrection: "imgsrc/MacAlert.png"
 }
 
 const teamViewerOfficalSite = "https://www.teamviewer.com/"
