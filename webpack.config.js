@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const path = require('path');
 
 //const debug = process.env.NODE_ENV !== "production";
-const debug = true;
+const debug = false;
 
 const itend = false;
 
