@@ -5,8 +5,6 @@ import { Link } from 'react-router';
 import ReserveButton from './ReseveButton.js';
 import StatusPrompt from './StatusPrompt.js';
 import io from 'socket.io-client';
-import Push from 'push.js';
-
 
 
 const alertClassName = [

@@ -8,7 +8,7 @@ const waitingWords = [
    "Sending out request ...", // ==> Request is sending to server
    "Your request has been processing\nPlease wait and keep Teamviewer running", // =====> Waiting to be taken by PMIT
    "Your IT Test with us has finished.", // ========> Test done
-   "One of IT took the test, and you will be connected soon.",  // ======> IT took the test and is connnecting with Teamviewer
+   "IT is connectiing to your computer...",  // ======> IT took the test and is connnecting with Teamviewer
    "Test is cancelled",  // ==========> Test cancelled by Consultant
    "Canceling the test...", // =============> Cancellation request is sending to server
    "Please check ID & password and click update, and be sure to keep TeamViewer running at all time." // =============> 

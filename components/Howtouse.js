@@ -17,7 +17,7 @@ const imgSrcForWin = {
   idPwCorrection: "imgsrc/MacAlert.png"
 }
 
-const teamViewerOfficalSite = "https://www.teamviewer.com/"
+const teamViewerOfficalSite = "https://en.wikipedia.org/wiki/TeamViewer"
 
 export default class Howtouse extends React.Component {
    

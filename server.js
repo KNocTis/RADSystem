@@ -29,7 +29,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, "views"));
 
 // define the folder that will be used for static assets
-app.use('/testportal', Express.static(path.join(__dirname, 'public')));
+app.use('/', Express.static(path.join(__dirname, 'public')));
 app.use('/ts', Express.static(path.join(__dirname, 'private')));
 
 app.use(morgan('dev')); 
@@ -54,7 +54,7 @@ mongoose.connect(configDB.url); // connect to our database
 //require('./config/passport')(passport); // pass passport for configuration
 require('./config/passport.js')(passport);
 
-app.get('/testportal',(req, res) => {
+app.get('/',(req, res) => {
 	
 //	let markup = <NavBar/>;
 		 
