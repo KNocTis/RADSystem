@@ -233,7 +233,7 @@ app.post("/api/finish-ticket", isLoggedIn, (req, res) => {
 
 })
 
-app.post("/api/update-ticket", isLoggedIn, (req, res) => {
+app.post("/api/update-ticket", (req, res) => {
 	console.log("Updating ticket: ", req.body.ticketNumber);
 //   console.log(req.body);
    

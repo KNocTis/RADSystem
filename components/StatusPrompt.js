@@ -8,7 +8,7 @@ const waitingWords = [
    "Sending out request ...", // ==> Request is sending to server
    "Your request has been processing\nPlease wait and keep Teamviewer running", // =====> Waiting to be taken by PMIT
    "Your IT Test with us has finished.", // ========> Test done
-   "IT is connectiing to your computer...",  // ======> IT took the test and is connnecting with Teamviewer
+   "IT is connecting to your computer...",  // ======> IT took the test and is connnecting with Teamviewer
    "Test is cancelled",  // ==========> Test cancelled by Consultant
    "Canceling the test...", // =============> Cancellation request is sending to server
    "Please check ID & password and click update, and be sure to keep TeamViewer running at all time." // =============> 
@@ -53,6 +53,9 @@ export default class StatusPrompt extends React.Component {
 
          return "PMIT have received your request. We are processing your account history and will help you as soon as we can. This might take approximately 5-10minutes.";    // =========> Phrase to be shown when waiting tests greater than 10    
       }
+     
+     if (this.props.alert.length > 0)
+       return this.props.alert;
       
       return waitingWords[this.props.reservationStatus];
    }

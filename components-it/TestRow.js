@@ -1,8 +1,11 @@
 'use strict';
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import io from 'socket.io-client';
 import moment from "moment";
+import FinishModal from './FinishModal.js';
+import AlertModal from './AlertModal.js';
 
 // Properties//
 // 1. ticketStatus ===> 0 ==> No one on it
@@ -91,35 +94,37 @@ export default class TestRow extends React.Component {
             });
             break;
          case 1: // ============================>  Someone is on it
+            $('#modals').html('');
+            ReactDOM.render(<FinishModal ticketNumber={this.props.ticket.ticketNumber}/>, document.getElementById('modals'));
             $('#finish-modal').modal('show');
             
-            let ticketNumber = this.props.ticket.ticketNumber;
-            let sendFinishPost = (type) => {
-               $.ajax({
-                  type: "POST",
-                  url: "/api/finish-ticket",
-                  data: {
-                     ticketNumber: ticketNumber,
-                     status: type
-                  },
-                  success: function( result ) {
-                     console.log("Finish a ticket, result ==> ", result);
-                  }
-               });
-            }
-            
-            $('#finish-pass').click(() => {
-               sendFinishPost(7);
-               $('#finish-modal').modal('hide');
-            });
-            $('#finish-fail').click(() => {
-               sendFinishPost(8);
-               $('#finish-modal').modal('hide');
-            });
-            $('#finish-terminate').click(() => {
-               sendFinishPost(5);
-               $('#finish-modal').modal('hide');
-            });
+//            let ticketNumber = this.props.ticket.ticketNumber;
+//            let sendFinishPost = (type) => {
+//               $.ajax({
+//                  type: "POST",
+//                  url: "/api/finish-ticket",
+//                  data: {
+//                     ticketNumber: ticketNumber,
+//                     status: type
+//                  },
+//                  success: function( result ) {
+//                     console.log("Finish a ticket, result ==> ", result);
+//                  }
+//               });
+//            }
+//            
+//            $('#finish-pass-' + this.props.ticket.ticketNumber).click(() => {
+//               sendFinishPost(7);
+//               $('#finish-modal-' + this.props.ticket.ticketNumber).modal('hide');
+//            });
+//            $('#finish-fail-' + this.props.ticket.ticketNumber).click(() => {
+//               sendFinishPost(8);
+//               $('#finish-modal-' + this.props.ticket.ticketNumber).modal('hide');
+//            });
+//            $('#finish-terminate-' + this.props.ticket.ticketNumber).click(() => {
+//               sendFinishPost(5);
+//               $('#finish-modal-' + this.props.ticket.ticketNumber).modal('hide');
+//            });
 
             break;
          case 3:
@@ -147,19 +152,32 @@ export default class TestRow extends React.Component {
       return this.props.ticket.ctlName ? this.props.ticket.ctlName : this.props.ticket.email;
    }
    
-   alert() {
-      $.ajax({
-         type: "POST",
-         url: "/api/push-noti-for-ticket",
-         data: {
-            ticketNumber: this.props.ticket.ticketNumber,
-            notification: "IT fails to connect to your computer"
-         },
-         success: function( result ) {
-            console.log("Server is broadcast message ");
-         }
-      });
-   }
+  alert() {
+
+    $('#modals').html('');
+    ReactDOM.render(<AlertModal ticketNumber={this.props.ticket.ticketNumber}/>, document.getElementById('modals'));
+    
+//    $('#alert-modal-' + this.props.ticket.ticketNumber).modal('hide');
+    $('#alert-modal').modal('show');
+
+//    $('#send-alert').click(() => {
+//      $.ajax({
+//        type: "POST",
+//        url: "/api/push-noti-for-ticket",
+//        data: {
+//          ticketNumber: this.props.ticket.ticketNumber,
+//          notification: $('#alert-textarea-' + this.props.ticket.ticketNumber).val()
+//        },
+//        success: function( result ) {
+//          console.log("Server is broadcast message ");
+//        }
+//      });
+//      
+//      $('#alert-modal-' + this.props.ticket.ticketNumber).modal('hide');
+//    })
+    
+    
+  }
    
     render () {
         return (

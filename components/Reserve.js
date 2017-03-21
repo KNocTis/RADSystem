@@ -16,7 +16,7 @@ const alertClassName = [
 const alertText = [
     "",
     "We are currently cannot connect to your computer, and we will keep trying to connect. Please reluanch Teamviewer and keep it runnning.",
-    "Sorry, the test is unexpectly terminated. Please request test again if need."
+    "Sorry, the test was unexpectly terminated. Please request test again if needed."
 ];
 
 const optionsOfIssues = [
@@ -44,7 +44,8 @@ export default class Reserve extends React.Component {
          ticketStatus: 'home',
          reserved: 0,
          alert: 0,
-         waitingCount: 9999
+         waitingCount: 9999,
+        alert: ""
       };
 
       this.channel = "";
@@ -106,7 +107,7 @@ export default class Reserve extends React.Component {
             
             //Confirmation before request
             ////////////////////////
-            let confirmation = confirm("By click \"ok\" to allow us remotely control your computer");
+            let confirmation = confirm("By clicking \"ok\" to allow us remotely control your computer");
             if (confirmation == false) {
                console.warn("User doenst allow to control");
                return false;
@@ -174,7 +175,8 @@ export default class Reserve extends React.Component {
             break;
          case 7: // ======================================================================> update ticket
             this.setState((prevState) => ({
-               reserved: 1
+               reserved: 1,
+              alert: ""
             }));
             
             $.ajax({
@@ -233,13 +235,13 @@ export default class Reserve extends React.Component {
            // Let's check if the browser supports notifications
            if (!("Notification" in window)) {
              conosle.warn("This browser does not support desktop notification");
-             alert("Oops! We failed to connect to your computer");
+             alert(resultTicket.notification);
            }
 
            // Let's check whether notification permissions have already been granted
            else if (Notification.permission === "granted") {
              // If it's okay let's create a notification
-             var notification = new Notification("Oops! We failed to connect to your computer");
+             var notification = new Notification(resultTicket.notification);
            }
 
            // Otherwise, we need to ask the user for permission
@@ -247,19 +249,20 @@ export default class Reserve extends React.Component {
              Notification.requestPermission(function (permission) {
                // If the user accepts, let's create a notification
                if (permission === "granted") {
-                 var notification = new Notification("Oops! We failed to connect to your computer");
+                 var notification = new Notification(resultTicket.notification);
                } else {
-                 alert("Oops! We failed to connect to your computer");
+                 alert(resultTicket.notification);
                }
              });
            }
            
            else if (Notification.permission === "denied") {
-             alert("Oops! We failed to connect to your computer");
+             alert(resultTicket.notification);
            }
 
             this.setState((prevState) => ({
-               reserved: 7
+               reserved: 7,
+              alert: resultTicket.notification
             }))
             
             return true;
@@ -348,7 +351,7 @@ export default class Reserve extends React.Component {
                     </select>
                  </div>
                </div>
-              <StatusPrompt reservationStatus={this.state.reserved} waitingCount={this.state.waitingCount}/>
+              <StatusPrompt reservationStatus={this.state.reserved} waitingCount={this.state.waitingCount} alert={this.state.alert}/>
               <div>
                  <ReserveButton reserved={this.state.reserved} onClick={this.reserveButtonHasBeenClicked} />
               </div>
