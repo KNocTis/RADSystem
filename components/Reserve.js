@@ -28,7 +28,10 @@ const optionsOfIssues = [
   "I moved to another location",
   "I want to resume teaching from my long leave",
   "I have trouble entering the session",
-  "我是奥数顾问"
+  "I have trouble in System Requirement Scanner",
+  "我是奥数顾问",
+  "我是TutorMingde顾问",
+  "我是TOEFL/IELTS顾问"
 ];
 
 let socket;
