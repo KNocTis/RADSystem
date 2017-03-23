@@ -4,6 +4,7 @@
 - Multiple tickets could be created if a consultant requests repeatly
 ## Features added
 - Notification of new tickets on IT end
+- Improved tickets sorting
 # Build 170322
 ## Bug fixes
 - Mutiple tests and/or alert can be passed at one time

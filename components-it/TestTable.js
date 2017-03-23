@@ -153,15 +153,33 @@ export default class TestTable extends React.Component {
     handleNextTicketsButton () {
        let addTicketsToTable = (tickets) => {
           tickets.map((ticketItem, index) => {
-             this.state.testListArray.push(ticketItem);
+            if( !this.isTicketDisplayedInTable(ticketItem) )
+              this.state.testListArray.push(ticketItem);
           });
           this.setState(this.state.testListArray);
        }
        
+       //Calculate "from" parameter
+       //========!!!!! WARN  !!!!!==================
+       //This should be done from API side in the future
+       let theLargestNumber = 0;
+      this.state.testListArray.map((ticketItem, index) => {
+        if (Number(ticketItem.ticketNumber) > theLargestNumber)
+          theLargestNumber = Number(ticketItem.ticketNumber);
+      });
+      let offsetNumber = theLargestNumber - this.state.testListArray.length;
+      let secOffetCount = 0;
+      this.state.testListArray.map((ticketItem, index) => {
+        if (Number(ticketItem.ticketNumber) < offsetNumber)
+          secOffetCount += 1;
+      });
+      offsetNumber += secOffetCount;
+       
+      //Send request
       $.ajax({
          url: "/api/get-tickets-from",
          data: {
-            from: this.state.testListArray[this.state.testListArray.length - 1].ticketNumber
+            from: offsetNumber + 1
          },
          success: function(result) {
             console.log("Ticket list got! \n", result);
