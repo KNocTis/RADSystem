@@ -54,24 +54,35 @@ module.exports = {
       //async
       process.nextTick(() => {
          //Check if there is a ticekt with same ID
-         Ticket.findOne(
-            {"id": tvID},
+         Ticket.find({"id": tvID}).sort({lastModifiedTime: -1}).exec(
             (err, ticket) => {
                if(err){
                   console.log("Error occured when finding a ticket", err);
                   return false;
                }
-
+              
                ///======================================
-               //If the ticket is cancelled within 2 hours
-               if(ticket){
-                  if (moment().subtract(2, "hours").isBefore(ticket.lastModifiedTime)){
-                     console.log(ticket.status);
-                     if (ticket.status == 4 || ticket.status == 5 || ticket.status == 6) {
+               //If the ticket is created within 45 minutes
+               if(ticket.length > 0){
+                 let theTicket = ticket[0];
+                  if (moment().subtract(45, "minutes").isBefore(theTicket.lastModifiedTime)){
+                     console.log("This ID has been created within 45 minutes", theTicket.id, ", status: ", theTicket.status);
+                    
+                    //Jump to next part, create a new ticket if this one is done
+                     if (theTicket.status == 7 || theTicket.status == 8) {} 
+                    //Do thing but get out of Database and return this ticket
+                    // 1 or 2 =====> Doing the test
+                    // 0 =============> Is waiting to be taken(Jumping queue is not allowed)
+                      else if (theTicket.status == 1 || theTicket.status == 2 || theTicket.status == 0) {
+                        done(err, theTicket);
+                        return false;
+                      } 
+                    //Update the ticket if its cancelled or terminated
+                    else {
                         //Pull the ticket to the top of query, then return
-                        ticket.status = 0;
-                        ticket.password = tvPW;
-                        ticket.save((err, updatedTicket) => {
+                        theTicket.status = 0;
+                        theTicket.password = tvPW;
+                        theTicket.save((err, updatedTicket) => {
                            done(err, updatedTicket);
                         });
                         return true

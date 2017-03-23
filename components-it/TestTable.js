@@ -75,9 +75,23 @@ export default class TestTable extends React.Component {
          }));
       //            console.log(tableList);
          socket.on('new-ticket-created', ticket => {
-            socket.on(ticket.ticketNumber, ticketHasBeenUpdated);
-            this.state.testListArray.unshift(ticket);
-            this.setState(this.state.testListArray);
+           if(!ticket){
+             console.warn("No ticket is passed in");
+             return false;
+           }
+     
+           this.showNotificationForNewTicket(ticket);
+           
+           if(this.isTicketDisplayedInTable(ticket)){
+             console.warn("The ticket is displayed in table already!");
+             ticketHasBeenUpdated(ticket);
+             return false;
+           }
+          
+          socket.on(ticket.ticketNumber, ticketHasBeenUpdated);
+          this.state.testListArray.unshift(ticket);
+          this.setState(this.state.testListArray);
+
          })
 
          let openChannelForTicket = (ticket, index) => {
@@ -205,6 +219,59 @@ export default class TestTable extends React.Component {
    updateTestList(list) {
 
    }
+  
+  showNotificationForNewTicket (ticket) {
+    
+    let spawnNotification = () => {
+      let ctlName = ticket.ctlName ? ticket.ctlName : ticket.email;
+      let body = ctlName + ": " + ticket.issue;
+          
+      var notifi = new Notification("New test received!", {
+        body: body
+      });
+    }
+    
+    // Let's check if the browser supports notifications
+    if (!("Notification" in window)) {
+     conosle.warn("This browser does not support desktop notification");
+     alert(resultTicket.notification);
+    }
+
+    // Let's check whether notification permissions have already been granted
+    else if (Notification.permission === "granted") {
+     // If it's okay let's create a notification
+     spawnNotification();
+    }
+
+    // Otherwise, we need to ask the user for permission
+    else if (Notification.permission !== "denied") {
+     Notification.requestPermission(function (permission) {
+       // If the user accepts, let's create a notification
+       if (permission === "granted") {
+         spawnNotification();
+       } else {
+         //alert(resultTicket.notification);
+       }
+     });
+    }
+
+    else if (Notification.permission === "denied") {
+     //lert(resultTicket.notification);
+    }
+
+  }
+  
+  isTicketDisplayedInTable(ticket) {
+    let flag = false;
+    
+    this.state.testListArray.map((ticketItem, index) => {
+      if (ticketItem.ticketNumber == ticket.ticketNumber)
+        flag = true;
+    });
+    
+    return flag;
+  }
+                                            
     
    render () {
       return (

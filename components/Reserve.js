@@ -30,7 +30,7 @@ const optionsOfIssues = [
   "I have trouble entering the session",
   "I have trouble in System Requirement Scanner",
   "我是奥数顾问",
-  "我是TutorMingde顾问",
+  "我是TutorMing的顾问",
   "我是TOEFL/IELTS顾问"
 ];
 
@@ -308,16 +308,15 @@ export default class Reserve extends React.Component {
       
       window.onbeforeunload = (e) => {
          if (ticket.status == 0 || ticket.status == 2) {
-            window.onbeforeunload = (e) => {
-               $.ajax({
-                  type: "POST",
-                  url: "/api/cancel-ticket",
-                  data: {
-                     ticket: ticket,
-                     type: 1
-                  }
-               });
-            }
+           socket.disconnect();
+           $.ajax({
+              type: "POST",
+              url: "/api/cancel-ticket",
+              data: {
+                 ticket: ticket,
+                 type: 1
+              }
+           });
          }
       }
       

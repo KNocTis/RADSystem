@@ -59,7 +59,7 @@ export default class Howtouse extends React.Component {
     return (
       <div  href="how-to-use" className="jumbotron text-center jumbotron-trans">
         <h2>Instruction</h2>
-        <p>1. Click <Link className="" href={this.linkForTeamviewer()}>here<i className="fa fa-link" aria-hidden="true"></i></Link> to downlaod <Link className="" href={teamViewerOfficalSite} target="_blank">TeamViewer<i className="fa fa-external-link" aria-hidden="true"></i></Link> into your computer.</p>
+        <p>1. Click <Link className="" href={this.linkForTeamviewer()}>here<i className="fa fa-link" aria-hidden="true"></i></Link> to download <Link className="" href={teamViewerOfficalSite} target="_blank">TeamViewer<i className="fa fa-external-link" aria-hidden="true"></i></Link> into your computer.</p>
         <p>2. Run the downloaded file to open TeamViewer in your computer.</p>
         <p>3. Input TeamViewer ID & Password into test request column.</p>
         <img src={this.imgSrcOf("teamViewer")} className="img-responsive img-thumbnail" alt="Responsive image"></img>
