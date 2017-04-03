@@ -6,7 +6,7 @@ const path = require('path');
 //const debug = process.env.NODE_ENV !== "production";
 const debug = false;
 
-const itend = true;
+const itend = false;
 
 const entryFile = itend ? path.join(__dirname, 'app-it.js') : path.join(__dirname, 'app-client.js');
 const outputFile = itend ? path.join(__dirname, 'private', 'js') : path.join(__dirname, 'public', 'js');

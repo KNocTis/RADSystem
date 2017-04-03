@@ -30,8 +30,8 @@ const optionsOfIssues = [
   "I have trouble entering the session",
   "I have trouble in System Requirement Scanner",
   "我是奥数顾问",
-  "我是TutorMing的顾问",
-  "我是TOEFL/IELTS顾问"
+  "I am TutorMing consultant",
+  "I am TOEFL/IELTS consultnat"
 ];
 
 let socket;
@@ -57,8 +57,8 @@ export default class Reserve extends React.Component {
       this.ticketHasBeenReserved = this.ticketHasBeenReserved.bind(this);
       this.ticketHasBeenRCancelled = this.ticketHasBeenRCancelled.bind(this);
    }
-	
-	// Reserved state 
+
+	// Reserved state
 	// 0 ===> not reserved or reserving
 	// 1 ===> waiting for reserved
 	// 2 ===> reserved, waiting to be tested
@@ -67,35 +67,41 @@ export default class Reserve extends React.Component {
 	// 5 ===> Ticket is canncelled
    // 6 ===> Ticket is cancelling
    // 7 ===> Fails to connect, ticket needs to be updated
-   
-	// Alert state 
+
+	// Alert state
 	// 0 ===> No alert
 	// 1 ===> unable to connect
 	// 2 ===> test terminated unexpectly
 	// 3 ===> ticket done
-    
+
 	validTeamviewerDetail(){
 //      console.log("length of tvID: ", document.getElementById('teamviewer-id').value.length);
-      
-      if (document.getElementById('teamviewer-id').value.length >= 9 && document.getElementById('teamviewer-id').value.length <= 10){
+      let idStr;
+      if ($('#teamviewer-id').val().match(/\d/g)) {
+        idStr = $('#teamviewer-id').val().match(/\d/g).join("");
+      } else {
+        return false;
+      }
+
+      if (idStr.length >= 9 && idStr.length <= 10){
          if (document.getElementById('teamviewer-pw').value.length > 3 && document.getElementById('teamviewer-pw').value.length < 18) {
             if (document.getElementById('name-email').value.length > 0)
                return true;
          }
       }
-      
+
       return false;
    }
-   
+
    validateEmail(email) {
       var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);
    }
-   
+
    optionElementForIssue(issueItem, index) {
       return <option value={issueItem} key={index}>{issueItem}</option>
    }
-	
+
    reserveButtonHasBeenClicked(e) {
 
       switch(this.state.reserved) {
@@ -107,7 +113,7 @@ export default class Reserve extends React.Component {
                alert("The ID and Password you entered is not correct, please double check and submit again.");
                break;
             }
-            
+
             //Confirmation before request
             ////////////////////////
             let confirmation = confirm("By clicking \"ok\" to allow us remotely control your computer");
@@ -115,9 +121,9 @@ export default class Reserve extends React.Component {
                console.warn("User doenst allow to control");
                return false;
             }
-               
-            
-             
+
+
+
              let others = {
                 issue: document.getElementById("issue").value
              };
@@ -126,7 +132,7 @@ export default class Reserve extends React.Component {
              } else {
                 others.ctlName = document.getElementById('name-email').value;
              }
-             
+
              let ticketHasBeenReserved = this.ticketHasBeenReserved;
 
              //send out request
@@ -157,11 +163,11 @@ export default class Reserve extends React.Component {
          case 2: // ======================================================================> Cancel test
 //             socket.emit(this.channel, 'cancel');
             let ticketHasBeenRCancelled = this.ticketHasBeenRCancelled;
-            
+
             this.setState((prevState) => ({
               reserved: 4
             }));
-            
+
             $.ajax({
                type: "POST",
                url: "/api/cancel-ticket",
@@ -174,14 +180,14 @@ export default class Reserve extends React.Component {
                   ticketHasBeenRCancelled();
                }
             });
-            
+
             break;
          case 7: // ======================================================================> update ticket
             this.setState((prevState) => ({
                reserved: 1,
               alert: ""
             }));
-            
+
             $.ajax({
                type: "POST",
                url: "/api/update-ticket",
@@ -194,22 +200,72 @@ export default class Reserve extends React.Component {
                   console.log("Failed to update ticket");
 //                  ticketHasBeenRCancelled();
                }
-            });            
+            });
       }
 
    }
-	
+
   componentDidMount() {
 //    this.interval = setInterval(() => this.tick(), 2000);
 	  socket = io();
 
+    //Restriction of form-inputs
+    $('#teamviewer-id').attr('type', 'text');
+    $('#teamviewer-id').keyup((e) => {
+
+      let shouldDeleteDelimeter = () => {
+        if ($('#teamviewer-id').val().length == 0) {
+          return false;
+        }
+        let idStr = $('#teamviewer-id').val().replace(/-/g, "");
+        let phase = idStr.length % 3;
+
+        return phase == 0 ? true : false;
+      }
+
+      if (e.which == 8 && shouldDeleteDelimeter()) {
+        $('#teamviewer-id').val($('#teamviewer-id').val().substring(0, $('#teamviewer-id').val().length - 1));
+      }
+
+
+    })
+
+    $('#teamviewer-id').keydown((e) => {
+
+      if (e.which == 8) {
+        return true;
+      }
+
+      if (e.key.search(/\d/) != 0 || $('#teamviewer-id').val().length > 12) {
+        return false;
+      }
+      // $('#teamviewer-id').val($('#teamviewer-id').val() + e.key);
+      let shouldAddDelimeter = () => {
+        if ($('#teamviewer-id').val().length == 0) {
+          return false;
+        }
+        let idStr = $('#teamviewer-id').val().replace(/-/g, "");
+        let phase = idStr.length % 3;
+
+        return phase == 0 ? true : false;
+      }
+
+      if (shouldAddDelimeter()) {
+        $('#teamviewer-id').val($('#teamviewer-id').val() + "-");
+      }
+
+    });
+
+    $('#teamviewer-id').on('paste', (e) => {
+      e.preventDefault()
+    });
   }
-   
+
    ticketHasBeenReserved() {
       this.setState((prevState) => ({
         reserved: 2
       }))
-      
+
       if (("Notification" in window)) {
         Notification.requestPermission(function (permission) {
           if (permission === "granted") {
@@ -217,21 +273,21 @@ export default class Reserve extends React.Component {
           }
         });
       }
-      
+
       socket.on(ticket.ticketNumber, resultTicket => {
-         
+
          console.log("Socketio broadcast messgae received", resultTicket);
-         
+
          if (resultTicket.waitingCount != undefined) {
-            
+
             //handle
             this.setState((prevState) => ({
                waitingCount: resultTicket.waitingCount
             }))
-            
+
             return true;
          }
-         
+
          //If IT fails to connect
          //pop up notification
          if (resultTicket.notification) {
@@ -258,7 +314,7 @@ export default class Reserve extends React.Component {
                }
              });
            }
-           
+
            else if (Notification.permission === "denied") {
              alert(resultTicket.notification);
            }
@@ -267,13 +323,13 @@ export default class Reserve extends React.Component {
                reserved: 7,
               alert: resultTicket.notification
             }))
-            
+
             return true;
-           // At last, if the user has denied notifications, and you 
+           // At last, if the user has denied notifications, and you
            // want to be respectful there is no need to bother them any more.
          }
-         
-         
+
+
          switch (resultTicket.status) {
             case 1: //====================> Some one is on it
                this.setState((prevState) => ({
@@ -295,17 +351,17 @@ export default class Reserve extends React.Component {
                   reserved: 3,
                   alert: 0
                }))
-               break; 
+               break;
             case 5: //====================> Terminated by IT
                this.setState((prevState) => ({
                   reserved: 5,
                   alert: 2
                }))
-               break; 
+               break;
          }
 
       });
-      
+
       window.onbeforeunload = (e) => {
          if (ticket.status == 0 || ticket.status == 2) {
            socket.disconnect();
@@ -319,16 +375,20 @@ export default class Reserve extends React.Component {
            });
          }
       }
-      
+
       console.log("Socketio channel created ", ticket.ticketNumber);
+
+
    }
-   
+
+
+
    ticketHasBeenRCancelled() {
       this.setState((prevState) => ({
         reserved: 0
       }))
    }
-	
+
 	render () {
 		return (
          <div className="jumbotron text-center">
@@ -336,7 +396,7 @@ export default class Reserve extends React.Component {
                <div className="id-password">
                  <div className="form-group">
                    <label htmlFor="teamviewer-id">TeamViewer ID</label>
-                   <input type="number" className="form-control text-center" id="teamviewer-id" placeholder="ID"/>
+                   <input type="text" className="form-control text-center" id="teamviewer-id" placeholder="Digit only"/>
                  </div>
                  <div className="form-group">
                    <label htmlFor="teamviewer-pw">Password</label>
@@ -363,5 +423,3 @@ export default class Reserve extends React.Component {
 		);
 	}
 }
-
-
