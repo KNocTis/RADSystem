@@ -147,7 +147,7 @@ export default class Reserve extends React.Component {
                type: "POST",
                url: "/api/create-ticket",
                data: {
-                  tvID: document.getElementById('teamviewer-id').value,
+                  tvID: $('#teamviewer-id').val().match(/\d/g).join(""),
                   tvPW: document.getElementById('teamviewer-pw').value,
                   others: others
                },
@@ -210,7 +210,6 @@ export default class Reserve extends React.Component {
 	  socket = io();
 
     //Restriction of form-inputs
-    $('#teamviewer-id').attr('type', 'text');
     $('#teamviewer-id').keyup((e) => {
 
       let shouldDeleteDelimeter = () => {
